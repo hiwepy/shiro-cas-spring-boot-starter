@@ -1,7 +1,6 @@
 package org.apache.shiro.spring.boot.cas.filter;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -12,45 +11,36 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.spring.boot.cas.token.CasToken;
 import org.apache.shiro.spring.boot.utils.RemoteAddrUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.util.AssertionHolder;
-import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 public class CasAuthenticatingFilter extends AuthenticatingFilter {
 
 	private static Logger logger = LoggerFactory.getLogger(CasAuthenticatingFilter.class);
     
-    // the name of the parameter service ticket in url
-    // private static final String TICKET_PARAMETER = "ticket";
-    
+    // the name of the parameter service ticket in url (i.e. ticket)
+    private static final String TICKET_PARAMETER = Protocol.CAS2.getArtifactParameterName();
+	
     // the url where the application is redirected if the CAS service ticket validation failed (example : /mycontextpatch/cas_error.jsp)
     private String failureUrl;
     
 	@Override
 	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
-		
 		HttpServletRequest httpRequest = WebUtils.toHttp(request);
-		
-		// 如果要获取用户的更多信息，用如下方法：
-		Assertion assertion = AssertionHolder.getAssertion();
-
-		//获取AttributePrincipal对象，这是客户端对象
-		AttributePrincipal principal = assertion.getPrincipal();
-		
-		String username = StringUtils.hasText(httpRequest.getRemoteUser()) ? httpRequest.getRemoteUser() :  principal.getName();
-
-		Map<String, Object> attrs = principal.getAttributes(); //获取更多用户属性
-		
-		return new CasToken(username, RemoteAddrUtils.getRemoteAddr(httpRequest), "" , true ,attrs);
-		
+		String ticket = httpRequest.getParameter(TICKET_PARAMETER);
+		CasToken token = new CasToken(RemoteAddrUtils.getRemoteAddr(httpRequest));
+		if(StringUtils.hasText(ticket)) {
+			token.setTicket(ticket);
+		}
+		token.setTicket(httpRequest.getRemoteUser());
+		return token;
 	}
 
-	 /**
+	/**
      * Execute login by creating {@link #createToken(javax.servlet.ServletRequest, javax.servlet.ServletResponse) token} and logging subject
      * with this token.
      * 

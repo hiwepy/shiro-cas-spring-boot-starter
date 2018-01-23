@@ -28,6 +28,8 @@ import org.apache.shiro.biz.authc.token.LoginTypeAuthenticationToken;
 public class CasToken implements DelegateAuthenticationToken, HostAuthenticationToken, RememberMeAuthenticationToken,
 		LoginTypeAuthenticationToken, LoginProtocolAuthenticationToken {
 
+	/** The service ticket returned by the CAS server */
+    private String ticket = null;
 	/** 用户名 */
 	private String username;
 	/** 其他参数 */
@@ -43,12 +45,8 @@ public class CasToken implements DelegateAuthenticationToken, HostAuthentication
 		super();
 	}
 
-	public CasToken(String username, String host, String protocol, boolean rememberMe, Map<String, Object> attrs) {
-		this.username = username;
+	public CasToken(String host) {
 		this.host = host;
-		this.protocol = protocol;
-		this.rememberMe = rememberMe;
-		this.attrs = attrs;
 	}
 
 	@Override
@@ -58,7 +56,7 @@ public class CasToken implements DelegateAuthenticationToken, HostAuthentication
 
 	@Override
 	public Object getCredentials() {
-		return null;
+		return ticket;
 	}
 
 	@Override
@@ -79,6 +77,10 @@ public class CasToken implements DelegateAuthenticationToken, HostAuthentication
 	@Override
 	public String getProtocol() {
 		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 	@Override
@@ -104,6 +106,14 @@ public class CasToken implements DelegateAuthenticationToken, HostAuthentication
 
 	public void setAttrs(Map<String, Object> attrs) {
 		this.attrs = attrs;
+	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
 	}
 
 }
