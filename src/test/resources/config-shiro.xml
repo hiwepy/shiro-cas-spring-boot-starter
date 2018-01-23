@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	
+	<!-- 缓存管理器: 使用Ehcache实现 -->
+    <bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="ehCacheManager"></property>
+		<!-- <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/> -->  
+    </bean>
+	
+	<!-- 凭证匹配器 -->
+	<bean id="credentialsMatcher" class="org.apache.shiro.biz.authc.credential.RetryLimitHashedCredentialsMatcher">  
+	    <constructor-arg ref="cacheManager"/>  
+	    <property name="hashAlgorithmName" value="md5"/>  
+	    <property name="hashIterations" value="2"/>  
+	    <property name="storedCredentialsHexEncoded" value="true"/>  
+	</bean>  
+
+	<!-- Realm实现 --> 
+	<bean id="userRealm" class="org.apache.shiro.biz.realm.DefaultPrincipalRealm">
+		<property name="repository" ref="defaultRepository"/>
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.biz.authc.credential.DefaultCredentialsMatcher" />
+		</property>
+		<property name="realmsListeners">
+			<list>
+				<bean class="net.jeebiz.globalweb.shiro.DefaultRealmListener"/>
+			</list>
+		</property>
+		<property name="cachingEnabled" value="true"/>
+        <property name="authenticationCachingEnabled" value="false"/>
+        <property name="authenticationCacheName" value="SHIRO_AUTHC"/>
+        <property name="authorizationCachingEnabled" value="true"/>
+        <property name="authorizationCacheName" value="SHIRO_AUTHZ"/>
+	</bean>
+	
+	<!-- 会话ID生成器 -->  
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>  
+
+	<!-- 如果需要启用tomcat集群，会话管理必须交由tomcat -->
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.ServletContainerSessionManager" />
+	
+	<!-- 配置shiro securityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realms">
+			<list>
+<!-- 				<ref bean="OutAccountRealm"/> -->
+				<ref bean="ZFRealm"/>
+			</list>
+		</property>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="cacheManager" ref="shiroCacheManager"/>
+	</bean>
+	
+	<!-- 自定义验证拦截器 -->
+	<bean id="ZFFormAuthenticationFilter" class="net.jeebiz.globalweb.shiro.DefaultAuthenticationFilter">
+		<property name="validateCaptcha" value="false"></property>
+	</bean>
+	
+	<bean id="OutAccountAuthenticationFilter" class="net.jeebiz.globalweb.shiro.ext.OutAccountAuthFilter" >
+		<property name="errorUrl" value="/403.zf"></property>
+	</bean>
+
+	<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+	<!-- the lifecycleBeanProcessor has run: -->
+	<!-- 配置shiro注解方式 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor" >
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+		
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
+	<bean id="sessionControFilter" class="net.jeebiz.globalweb.shiro.DefaultSessionControlFilter">
+		<property name="cacheManager" ref="shiroCacheManager"/>
+		<property name="sessionControlCacheName" value="ZFTAL_SHIRO"></property>
+		<property name="loginUrl" value="/xtgl/login/slogin.zf?kickout=1"></property>
+	</bean>
+	
+	<bean id="zflogoutFilter" class="net.jeebiz.globalweb.shiro.ZFLogoutFilter"></bean>
+	
+	<bean id="sessionExpiredFilter" class="net.jeebiz.shiro.filter.session.SessionExpiredFilter"></bean>
+    
+	<!-- 配置Shiro拦截器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- securityManager -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 登录路径 -->
+		<property name="loginUrl" value="/xtgl/login/slogin.zf" />
+		<!-- 登录成功后跳转路径 -->
+		<property name="successUrl" value="/xtgl/index/initMenu.zf" />
+		<property name="unauthorizedUrl" value="/403.zf" />
+		<property name="filters">
+			<util:map>
+				<entry key="authc" value-ref="ZFFormAuthenticationFilter" />
+				<entry key="outAuthc" value-ref="OutAccountAuthenticationFilter" />
+				<entry key="sessionControl" value-ref="sessionControFilter" />
+				<entry key="logout" value-ref="zflogoutFilter"></entry>
+				<entry key="sessionExpired" value-ref="sessionExpiredFilter"></entry>
+			</util:map>
+		</property>
+		<!-- 过滤链定义 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/ = anon
+				/css/** = anon
+				/js/** = anon
+				/err/** = anon
+				/logo/** = anon
+				/download/** = anon
+				/kaptcha* = anon
+				/tjcx/login.zf* = outAuthc
+				/wjdc/login.zf* = outAuthc
+				/dr/login.zf* = outAuthc
+				/zxzx/web/myTopic.html* = authc
+				/zxzx/web/deleteMyTopic.html* = authc
+				/zxzx/web/** = anon
+				/pwdmgr/retake/** = anon
+				/pwdmgr/update/** = anon
+				/xtgl/login_code.html* = anon
+				/xtgl/login/getPublicKey.zf = anon
+				/xtgl/login/slogin.zf = authc
+				/druid/* = roles[admin]
+				/logout = logout
+				/** = sessionExpired,sessionControl,authc
+			</value>
+		</property>
+	</bean>
+	
+</beans>
