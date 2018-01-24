@@ -34,7 +34,7 @@ import org.springframework.web.util.UriUtils;
  */
 public class ShiroCasPac4jFilterFactoryBean extends ShiroFilterProxyFactoryBean implements ApplicationContextAware {
 
-	private final ShiroCasProperties properties;
+	private final ShiroCasProperties casProperties;
 	private final ServerProperties serverProperties;
 	private ApplicationContext applicationContext;
 
@@ -42,8 +42,8 @@ public class ShiroCasPac4jFilterFactoryBean extends ShiroFilterProxyFactoryBean 
 		return applicationContext;
 	}
 
-	public ShiroCasPac4jFilterFactoryBean(ShiroCasProperties properties, ServerProperties serverProperties) {
-		this.properties = properties;
+	public ShiroCasPac4jFilterFactoryBean(ShiroCasProperties casProperties, ServerProperties serverProperties) {
+		this.casProperties = casProperties;
 		this.serverProperties = serverProperties;
 	}
 
@@ -54,7 +54,7 @@ public class ShiroCasPac4jFilterFactoryBean extends ShiroFilterProxyFactoryBean 
 
 	public String getCasLoginUrl(String successUrl) {
 
-		StringBuilder casRedirectUrl = new StringBuilder(properties.getCasServerUrlPrefix());
+		StringBuilder casRedirectUrl = new StringBuilder(casProperties.getCasServerUrlPrefix());
 		if (!casRedirectUrl.toString().endsWith("/")) {
 			casRedirectUrl.append("/");
 		}
@@ -62,19 +62,18 @@ public class ShiroCasPac4jFilterFactoryBean extends ShiroFilterProxyFactoryBean 
 		//loginUrl中需要加上clinetname
 				/*String loginUrl = casServerUrlPrefix + "/login?service=" + shiroServerUrlPrefix + "/callback?client_name=" + clientName;
 				shiroFilterFactoryBean.setLoginUrl(loginUrl);*/
-				
 		
 		// Cas登录地址
-		casRedirectUrl.append("login?service=");
+		casRedirectUrl.append("login?").append(casProperties.getServiceParameterName()).append("=");
 
 		// 登出的重定向地址：用于重新回到业务系统登录界面
-		StringBuilder callbackUrl = new StringBuilder(StringUtils.hasText(properties.getServerName())? properties.getServerName(): properties.getService())
+		StringBuilder callbackUrl = new StringBuilder(StringUtils.hasText(casProperties.getServerName())? casProperties.getServerName(): casProperties.getService())
 				.append(StringUtils.hasText(serverProperties.getContextPath()) ? serverProperties.getContextPath() : "/")
 				.append(successUrl);
 
 		try {
-			if(properties.isEncodeServiceUrl()) {
-				casRedirectUrl.append(UriUtils.encodePath(callbackUrl.toString(), properties.getEncoding()));
+			if(casProperties.isEncodeServiceUrl()) {
+				casRedirectUrl.append(UriUtils.encodePath(callbackUrl.toString(), casProperties.getEncoding()));
 			} else {
 				casRedirectUrl.append(callbackUrl.toString());
 			}
