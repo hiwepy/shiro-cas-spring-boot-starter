@@ -9,10 +9,15 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(ShiroCasPac4jProperties.PREFIX)
-public class ShiroCasPac4jProperties extends ShiroCasProperties{
+public class ShiroCasPac4jProperties{
 
-	public static final String PREFIX = "shiro.cas";
+	public static final String PREFIX = "shiro.pac4j";
 
+	/**
+	 * Enable Shiro Pac4j.
+	 */
+	private boolean enabled = false;
+	
 	/** 认证IP正则表达式：可实现IP访问限制 */
     private String allowedIpRegexpPattern;
     
@@ -316,19 +321,27 @@ public class ShiroCasPac4jProperties extends ShiroCasProperties{
     private String authorizers = DefaultAuthorizers.CSRF;
     private String matchers;
     
-    /** Whether multiple profiles should be kept */
+    /** Whether multiple profiles should be kept . 默认 false*/
     private boolean multiProfile = false;
 
     /** SecurityFilter */
     
     /** Pattern that logout urls must match（注销登录路径规则，用于匹配登录请求操作）*/
     private String logoutUrlPattern;
-    /** Whether the application logout must be performed（是否注销本地应用身份认证）*/
+    /** Whether the application logout must be performed（是否注销本地应用身份认证）. 默认 true*/
     private boolean localLogout = true;
-    /** Whether the centralLogout must be performed（是否注销统一身份认证）*/
+    /** Whether the centralLogout must be performed（是否注销统一身份认证）. 默认 true*/
     private boolean centralLogout = true;
     
     
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public String getAllowedIpRegexpPattern() {
 		return allowedIpRegexpPattern;
 	}

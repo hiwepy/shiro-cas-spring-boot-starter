@@ -26,13 +26,14 @@ public class Pac4jCasRealm extends Pac4jRealm {
 	    Pac4jPrincipal pac4jPrincipal = (Pac4jPrincipal) principals.getPrimaryPrincipal();
 	    return pac4jPrincipal.getProfile().getId();
 	}
-
+	
 	@Override
 	protected Object getAuthenticationCacheKey(AuthenticationToken token) {
 	    if (token instanceof Pac4jToken) {
 	        Pac4jToken pac4jToken = (Pac4jToken) token;
 	        Object principal = pac4jToken.getPrincipal();
 	        if (principal instanceof Optional) {
+	           
 	            Optional<CasProfile> casProfileOptional = (Optional<CasProfile>) principal;
 	            return casProfileOptional.get().getId();
 	        }

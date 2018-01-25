@@ -36,7 +36,7 @@ public class CasAuthenticatingFilter extends AuthenticatingFilter {
 		if(StringUtils.hasText(ticket)) {
 			token.setTicket(ticket);
 		}
-		token.setTicket(httpRequest.getRemoteUser());
+		token.setUsername(httpRequest.getRemoteUser());
 		return token;
 	}
 

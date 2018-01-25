@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import io.buji.pac4j.realm.Pac4jRealm;
 
+@SuppressWarnings("unchecked")
 public abstract class Pac4jInternalAuthorizingRealm extends Pac4jRealm {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InternalAuthorizingRealm.class);
@@ -60,7 +61,7 @@ public abstract class Pac4jInternalAuthorizingRealm extends Pac4jRealm {
 	 * @param principals : PrincipalCollection是一个身份集合，因为我们现在就一个Realm，所以直接调用getPrimaryPrincipal得到之前传入的用户名即可；然后根据用户名调用UserService接口获取角色及权限信息。
 	 * @return
 	 */
-    @Override
+	@Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     	
     	if(principals == null || principals.isEmpty()){

@@ -3,7 +3,6 @@
  */
 package org.apache.shiro.spring.boot.cas;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,16 +11,13 @@ import java.util.Map.Entry;
 import javax.servlet.Filter;
 
 import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
-import org.apache.shiro.spring.boot.ShiroCasProperties;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.util.UriUtils;
 
 
 /**
@@ -34,52 +30,19 @@ import org.springframework.web.util.UriUtils;
  */
 public class ShiroCasFilterFactoryBean extends ShiroFilterProxyFactoryBean implements ApplicationContextAware {
 
-	private final ShiroCasProperties properties;
-	private final ServerProperties serverProperties;
 	private ApplicationContext applicationContext;
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
 
-	public ShiroCasFilterFactoryBean(ShiroCasProperties properties, ServerProperties serverProperties) {
-		this.properties = properties;
-		this.serverProperties = serverProperties;
+	public ShiroCasFilterFactoryBean() {
 	}
-
-	@Override
-	public String getLoginUrl() {
-		return getCasLoginUrl(getSuccessUrl());
+	
+	protected boolean supports(Filter filter) {
+		return filter instanceof AccessControlFilter ||  filter instanceof LogoutFilter;
 	}
-
-	public String getCasLoginUrl(String successUrl) {
-
-		StringBuilder casRedirectUrl = new StringBuilder(properties.getCasServerUrlPrefix());
-		if (!casRedirectUrl.toString().endsWith("/")) {
-			casRedirectUrl.append("/");
-		}
-		// Cas登录地址
-		casRedirectUrl.append("login?service=");
-
-		// 登出的重定向地址：用于重新回到业务系统登录界面
-		StringBuilder callbackUrl = new StringBuilder(StringUtils.hasText(properties.getServerName())? properties.getServerName(): properties.getService())
-				.append(StringUtils.hasText(serverProperties.getContextPath()) ? serverProperties.getContextPath() : "/")
-				.append(successUrl);
-
-		try {
-			if(properties.isEncodeServiceUrl()) {
-				casRedirectUrl.append(UriUtils.encodePath(callbackUrl.toString(), properties.getEncoding()));
-			} else {
-				casRedirectUrl.append(callbackUrl.toString());
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			casRedirectUrl.append(callbackUrl.toString());
-		}
-
-		return casRedirectUrl.toString();
-	}
-
+	
 	// 过滤器链：实现对路径规则的拦截过滤
 	@Override
 	public Map<String, Filter> getFilters() {
@@ -92,7 +55,7 @@ public class ShiroCasFilterFactoryBean extends ShiroFilterProxyFactoryBean imple
 			Iterator<Entry<String, FilterRegistrationBean>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, FilterRegistrationBean> entry = ite.next();
-				if (entry.getValue().getFilter() instanceof AccessControlFilter) {
+				if (this.supports(entry.getValue().getFilter())) {
 					filters.put(entry.getKey(), entry.getValue().getFilter());
 				}
 			}

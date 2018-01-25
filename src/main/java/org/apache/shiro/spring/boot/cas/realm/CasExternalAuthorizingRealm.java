@@ -26,18 +26,17 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.biz.realm.ExternalAuthorizingRealm;
+import org.apache.shiro.spring.boot.ShiroCasProperties;
 import org.apache.shiro.spring.boot.cas.exception.CasAuthenticationException;
 import org.apache.shiro.spring.boot.cas.token.CasToken;
+import org.apache.shiro.spring.boot.utils.CasTicketValidatorUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.CollectionUtils;
 import org.apache.shiro.util.StringUtils;
-import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.util.AssertionHolder;
 import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
-import org.jasig.cas.client.validation.Saml11TicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
@@ -45,30 +44,11 @@ import org.slf4j.LoggerFactory;
 
 public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
 
-	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
-    public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
-    public static final String DEFAULT_VALIDATION_PROTOCOL = "CAS";
-    
     private static Logger log = LoggerFactory.getLogger(CasExternalAuthorizingRealm.class);
 
-    
-    // this is the url of the CAS server (example : http://host:port/cas)
-    private String casServerUrlPrefix;
-    
-    // this is the CAS service url of the application (example : http://host:port/mycontextpath/shiro-cas)
-    private String casService;
-    
-    /* CAS protocol to use for ticket validation : CAS (default) or SAML :
-       - CAS protocol can be used with CAS server version < 3.1 : in this case, no user attributes can be retrieved from the CAS ticket validation response (except if there are some customizations on CAS server side)
-       - SAML protocol can be used with CAS server version >= 3.1 : in this case, user attributes can be extracted from the CAS ticket validation response
-    */
-    private String validationProtocol = DEFAULT_VALIDATION_PROTOCOL;
-    
-    // default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
-    private String rememberMeAttributeName = DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME;
-    
     // this class from the CAS client is used to validate a service ticket on CAS server
     private TicketValidator ticketValidator;
+    private ShiroCasProperties casProperties;
     
     // default roles to applied to authenticated user
     private String defaultRoles;
@@ -82,8 +62,9 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
     // names of attributes containing permissions
     private String permissionAttributeNames;
     
-    public CasExternalAuthorizingRealm() {
+    public CasExternalAuthorizingRealm(ShiroCasProperties casProperties) {
         setAuthenticationTokenClass(CasToken.class);
+        setCasProperties(casProperties);
     }
 
     @Override
@@ -94,17 +75,9 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
 
     protected TicketValidator ensureTicketValidator() {
         if (this.ticketValidator == null) {
-            this.ticketValidator = createTicketValidator();
+        	this.ticketValidator = CasTicketValidatorUtils.createTicketValidator(casProperties);
         }
         return this.ticketValidator;
-    }
-    
-    protected TicketValidator createTicketValidator() {
-        String urlPrefix = getCasServerUrlPrefix();
-        if (Protocol.SAML11.name().equalsIgnoreCase(getValidationProtocol())) {
-            return new Saml11TicketValidator(urlPrefix);
-        }
-        return new Cas20ServiceTicketValidator(urlPrefix);
     }
     
     /**
@@ -132,7 +105,7 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
      		Map<String, Object> attributes = principal.getAttributes(); 
      		
      		casToken.setUsername(username);
-            String rememberMeAttributeName = getRememberMeAttributeName();
+            String rememberMeAttributeName = casProperties.getRememberMeAttributeName();
             String rememberMeStringValue = (String)attributes.get(rememberMeAttributeName);
             boolean isRemembered = rememberMeStringValue != null && Boolean.parseBoolean(rememberMeStringValue);
             if (isRemembered) {
@@ -155,18 +128,18 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
         try {
         	
             // contact CAS server to validate service ticket
-            Assertion casAssertion = ticketValidator.validate(ticket, getCasService());
+            Assertion casAssertion = ticketValidator.validate(ticket, casProperties.getServerName());
             // get principal, user id and attributes
             AttributePrincipal casPrincipal = casAssertion.getPrincipal();
             String username = casPrincipal.getName();
             log.debug("Validate ticket : {} in CAS server : {} to retrieve user : {}", new Object[]{
-                 ticket, getCasServerUrlPrefix(), username
+                 ticket, casProperties.getCasServerUrlPrefix(), username
             });
 
             Map<String, Object> attributes = casPrincipal.getAttributes();
             // refresh authentication token (user id + remember me)
             casToken.setUsername(username);
-            String rememberMeAttributeName = getRememberMeAttributeName();
+            String rememberMeAttributeName = casProperties.getRememberMeAttributeName();
             String rememberMeStringValue = (String)attributes.get(rememberMeAttributeName);
             boolean isRemembered = rememberMeStringValue != null && Boolean.parseBoolean(rememberMeStringValue);
             if (isRemembered) {
@@ -260,38 +233,6 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
         }
     }
 
-    public String getCasServerUrlPrefix() {
-        return casServerUrlPrefix;
-    }
-
-    public void setCasServerUrlPrefix(String casServerUrlPrefix) {
-        this.casServerUrlPrefix = casServerUrlPrefix;
-    }
-
-    public String getCasService() {
-        return casService;
-    }
-
-    public void setCasService(String casService) {
-        this.casService = casService;
-    }
-
-    public String getValidationProtocol() {
-        return validationProtocol;
-    }
-
-    public void setValidationProtocol(String validationProtocol) {
-        this.validationProtocol = validationProtocol;
-    }
-
-    public String getRememberMeAttributeName() {
-        return rememberMeAttributeName;
-    }
-
-    public void setRememberMeAttributeName(String rememberMeAttributeName) {
-        this.rememberMeAttributeName = rememberMeAttributeName;
-    }
-
     public String getDefaultRoles() {
         return defaultRoles;
     }
@@ -324,4 +265,12 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
         this.permissionAttributeNames = permissionAttributeNames;
     }
 
+	public ShiroCasProperties getCasProperties() {
+		return casProperties;
+	}
+
+	public void setCasProperties(ShiroCasProperties casProperties) {
+		this.casProperties = casProperties;
+	}
+    
 }

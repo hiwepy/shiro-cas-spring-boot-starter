@@ -1,11 +1,59 @@
-server:
-  port: 7900
-
-shiro: 
+################################################################################################################  
+###Shiro 权限控制基本配置：  
+################################################################################################################
+shiro:
   enabled: true
-  sessionManager:
-    sessionIdCookieEnabled: true
-    sessionIdUrlRewritingEnabled:  true
-  biz:
-    session-id-cookie:
-      comment: 
+  validate-captcha: false
+  login-url: /authz/login/slogin
+  redirect-url: /authz/login/index
+  success-url: /index
+  unauthorized-url: /error
+  failure-url: /error
+  annotations: 
+    enabled: true
+  web: 
+    enabled: true
+  filter-chain-definition-map: 
+    / : anon
+    /*favicon.ico : anon
+    /webjars/** : anon
+    /assets/** : anon
+    /html/** : anon
+    /error* : anon
+    /logo/** : anon
+    /kaptcha* : anon
+    /pwdmgr/retake/** : anon
+    /pwdmgr/update/** : anon
+    /authz/login_code* : anon
+    /authz/login/getPublicKey* : anon
+    /authz/login/index* : anon
+    /authz/login/slogin* : authc
+    /druid/* : roles[admin]
+    /api/** : anon
+    /ws/** : anon
+    /sockets/** : anon
+    /topic/** : anon
+    /monitoring/** : anon
+    /zfdsb/oauth2/accessToken : anon
+    /logout : logout
+    /callback : cas
+    /index : sessionExpired,sessionControl,authc
+    /** : sessionExpired,sessionControl,authc
+  cas: 
+    enabled: true
+    accept-any-proxy: true
+    cas-server-login-url: http://10.71.19.215:10000/cas/login
+    cas-server-logout-url: http://10.71.19.215:10000/cas/logout
+    cas-server-url-prefix: http://10.71.19.215:10000/cas
+    server-callback-url: /callback
+    server-name: http://10.71.33.167:8181
+    encoding: UTF-8
+    ignore-pattern: /webjars/;/assets/;/authz/login/slogin;/authz/login/getPublicKey;/logout;/callback
+    #ignore-url-pattern-type: com.zfsoft.boot.shiro.sso.AntPatternMatcherStrategy
+    ignore-url-pattern-type: com.zfsoft.boot.shiro.sso.ContainsPatternsUrlPatternMatcherStrategy
+  pac4j:
+    enabled: true
+    callback-url: /callback
+    cas-client-name: cas
+    client-name: cas
+    authorizers: securityheaders, cas

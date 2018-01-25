@@ -9,6 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(ShiroCasProperties.PREFIX)
 public class ShiroCasProperties{
 
+	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
+    public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 	public static final String PREFIX = "shiro.cas";
 
 	public static enum CaMode {
@@ -24,6 +26,8 @@ public class ShiroCasProperties{
 	private String configurationStrategy;
 	/** Defines the location of the CAS server login URL, i.e. https://localhost:8443/cas/login */
 	private String casServerLoginUrl;
+	/** Defines the location of the CAS server logout URL, i.e. https://localhost:8443/cas/logout */
+	private String casServerLogoutUrl;
 	/** Defines the location of the CAS server rest URL, i.e. https://localhost:8443/cas/v1/tickets */
 	private String casServerRestUrl;
 	/** The prefix url of the CAS server. i.e.https://localhost:8443/cas */
@@ -31,7 +35,7 @@ public class ShiroCasProperties{
     /** Defaults to true */
 	private boolean eagerlyCreateSessions = true;
     /** Specifies whether any proxy is OK. Defaults to false. */
-	private boolean acceptAnyProxy = true;
+	private boolean acceptAnyProxy = false;
 	/**
 	 * Specifies the proxy chain. 
 	 * Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the ^ character). 
@@ -114,8 +118,12 @@ public class ShiroCasProperties{
 	private String relayStateParameterName;
 	/** Used to determine the principal role. */
 	private String roleAttribute;
+	/** default name of the CAS attribute for remember me authentication (CAS 3.4.10+) */
+    private String rememberMeAttributeName = DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME;
 	/** The secret key used by the proxyGrantingTicketStorageClass if it supports encryption. */
 	private String secretKey;
+	/** Defines the location of the application cas callback URL, i.e. /callback */
+	private String serverCallbackUrl;
 	/**
 	 * The name of the server this application is hosted on. 
 	 * Service URL will be dynamically constructed using this, 
@@ -144,7 +152,7 @@ public class ShiroCasProperties{
 	 * Note that 10 seconds should be more than enough for most environments that have NTP time synchronization. 
 	 * Defaults to 1000 msec
 	 */
-	private long tolerance = 1000L;
+	private long tolerance = 5000L;
 	/**
 	 * Whether to store the Assertion in session or not. If sessions are not used,
 	 * tickets will be required for each request. Defaults to true.
@@ -175,6 +183,14 @@ public class ShiroCasProperties{
 		this.casServerLoginUrl = casServerLoginUrl;
 	}
 	
+	public String getCasServerLogoutUrl() {
+		return casServerLogoutUrl;
+	}
+
+	public void setCasServerLogoutUrl(String casServerLogoutUrl) {
+		this.casServerLogoutUrl = casServerLogoutUrl;
+	}
+
 	public String getCasServerRestUrl() {
 		return casServerRestUrl;
 	}
@@ -486,6 +502,14 @@ public class ShiroCasProperties{
 	public void setRoleAttribute(String roleAttribute) {
 		this.roleAttribute = roleAttribute;
 	}
+	
+	public String getRememberMeAttributeName() {
+		return rememberMeAttributeName;
+	}
+
+	public void setRememberMeAttributeName(String rememberMeAttributeName) {
+		this.rememberMeAttributeName = rememberMeAttributeName;
+	}
 
 	public String getSecretKey() {
 		return secretKey;
@@ -495,12 +519,12 @@ public class ShiroCasProperties{
 		this.secretKey = secretKey;
 	}
 
-	public String getService() {
-		return service;
+	public String getServerCallbackUrl() {
+		return serverCallbackUrl;
 	}
 
-	public void setService(String service) {
-		this.service = service;
+	public void setServerCallbackUrl(String serverCallbackUrl) {
+		this.serverCallbackUrl = serverCallbackUrl;
 	}
 
 	public String getServerName() {
@@ -509,6 +533,14 @@ public class ShiroCasProperties{
 
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
+	}
+	
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
 	}
 
 	public String[] getSignOutFilterUrlPatterns() {

@@ -19,13 +19,11 @@ import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.mgt.SubjectFactory;
-import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -37,8 +35,7 @@ import io.buji.pac4j.subject.Pac4jSubjectFactory;
 
 @Configuration
 @ConditionalOnWebApplication
-@AutoConfigureBefore(ShiroWebAutoConfiguration.class)
-@ConditionalOnClass()
+@AutoConfigureBefore(ShiroCasWebAutoConfiguration.class)
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroCasProperties.class, ShiroCasPac4jProperties.class })
 public class ShiroCasPac4jWebAutoConfiguration extends AbstractShiroWebConfiguration {
@@ -59,7 +56,7 @@ public class ShiroCasPac4jWebAutoConfiguration extends AbstractShiroWebConfigura
 			chainDefinition.addPathDefinitions(pathDefinitions);
 			return chainDefinition;
 		}
-		chainDefinition.addPathDefinition("/callback", "callback");
+		chainDefinition.addPathDefinition("/callback", "cas");
 		chainDefinition.addPathDefinition("/logout", "logout");
 		chainDefinition.addPathDefinition("/**", "authc");
 		return chainDefinition;
