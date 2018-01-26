@@ -8,8 +8,8 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(ShiroCasPac4jProperties.PREFIX)
-public class ShiroCasPac4jProperties{
+@ConfigurationProperties(ShiroPac4jCasProperties.PREFIX)
+public class ShiroPac4jCasProperties{
 
 	public static final String PREFIX = "shiro.pac4j";
 

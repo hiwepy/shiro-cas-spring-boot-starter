@@ -93,8 +93,8 @@ import io.buji.pac4j.filter.SecurityFilter;
 @AutoConfigureBefore(ShiroCasWebFilterConfiguration.class)
 @ConditionalOnClass(CasConfiguration.class)
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroProperties.class, ShiroCasPac4jProperties.class })
-public class ShiroCasPac4jWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
+@EnableConfigurationProperties({ ShiroProperties.class, ShiroPac4jCasProperties.class })
+public class ShiroPac4jCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 	
@@ -103,7 +103,7 @@ public class ShiroCasPac4jWebFilterConfiguration extends AbstractShiroWebFilterC
 	@Autowired
 	private ShiroCasProperties casProperties;
 	@Autowired
-	private ShiroCasPac4jProperties pac4jProperties;
+	private ShiroPac4jCasProperties pac4jProperties;
 	@Autowired
 	private ServerProperties serverProperties;
 	

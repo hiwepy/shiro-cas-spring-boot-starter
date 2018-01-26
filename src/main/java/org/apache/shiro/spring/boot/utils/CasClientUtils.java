@@ -15,7 +15,7 @@
  */
 package org.apache.shiro.spring.boot.utils;
 
-import org.apache.shiro.spring.boot.ShiroCasPac4jProperties;
+import org.apache.shiro.spring.boot.ShiroPac4jCasProperties;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.direct.DirectCasClient;
 import org.pac4j.cas.client.direct.DirectCasProxyClient;
@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 
 public class CasClientUtils {
 
-	public static CasClient casClient(CasConfiguration configuration, ShiroCasPac4jProperties pac4jProperties,ServerProperties serverProperties) {
+	public static CasClient casClient(CasConfiguration configuration, ShiroPac4jCasProperties pac4jProperties,ServerProperties serverProperties) {
 
 		CasClient casClient = new CasClient(configuration);
 		casClient.setCallbackUrl( pac4jProperties.getCallbackUrl());
@@ -35,7 +35,7 @@ public class CasClientUtils {
 		return casClient;
 	}
 	
-	public static DirectCasClient directCasClient(CasConfiguration configuration,ShiroCasPac4jProperties casProperties) {
+	public static DirectCasClient directCasClient(CasConfiguration configuration,ShiroPac4jCasProperties casProperties) {
 		
 		DirectCasClient casClient = new DirectCasClient();
 		
@@ -45,7 +45,7 @@ public class CasClientUtils {
 		return casClient;
 	}
 
-	public static DirectCasProxyClient directCasProxyClient(CasConfiguration configuration,ShiroCasPac4jProperties casProperties, String serverUrl) {
+	public static DirectCasProxyClient directCasProxyClient(CasConfiguration configuration,ShiroPac4jCasProperties casProperties, String serverUrl) {
 		
 		DirectCasProxyClient casClient = new DirectCasProxyClient();
 		
@@ -56,7 +56,7 @@ public class CasClientUtils {
 		return casClient;
 	}
 
-	public static CasRestBasicAuthClient casRestBasicAuthClient(CasConfiguration configuration,ShiroCasPac4jProperties casProperties) {
+	public static CasRestBasicAuthClient casRestBasicAuthClient(CasConfiguration configuration,ShiroPac4jCasProperties casProperties) {
 		
 		CasRestBasicAuthClient casClient = new CasRestBasicAuthClient();
 		
@@ -76,7 +76,7 @@ public class CasClientUtils {
 	 * 通过rest接口可以获取tgt，获取service ticket，甚至可以获取CasProfile
 	 * @return
 	 */
-	public static CasRestFormClient casRestFormClient(CasConfiguration configuration,ShiroCasPac4jProperties casProperties) {
+	public static CasRestFormClient casRestFormClient(CasConfiguration configuration,ShiroPac4jCasProperties casProperties) {
 		
 		CasRestFormClient casClient = new CasRestFormClient();
 		

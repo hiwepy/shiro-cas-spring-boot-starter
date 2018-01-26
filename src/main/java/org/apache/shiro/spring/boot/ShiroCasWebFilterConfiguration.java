@@ -246,7 +246,7 @@ import org.springframework.util.StringUtils;
 @Configuration
 @ConditionalOnWebApplication
 @AutoConfigureBefore(ShiroWebFilterConfiguration.class)
-@AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroCasPac4jWebFilterConfiguration.class})
+@AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroPac4jCasWebFilterConfiguration.class})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroProperties.class, ShiroCasProperties.class })
 public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {

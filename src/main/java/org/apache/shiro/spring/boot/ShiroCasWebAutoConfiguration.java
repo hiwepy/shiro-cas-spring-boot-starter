@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnWebApplication
 @AutoConfigureBefore(ShiroWebAutoConfiguration.class)
-@AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroCasPac4jWebAutoConfiguration.class})
+@AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroPac4jCasWebAutoConfiguration.class})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroProperties.class, ShiroCasProperties.class })
 public class ShiroCasWebAutoConfiguration extends AbstractShiroWebConfiguration {
