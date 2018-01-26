@@ -10,9 +10,11 @@ import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguratio
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.filter.authc.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -23,10 +25,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnWebApplication
-@AutoConfigureBefore(ShiroWebAutoConfiguration.class)
 @AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroPac4jCasWebAutoConfiguration.class})
+@AutoConfigureBefore(value = { ShiroWebAutoConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration.class"})
+@ConditionalOnClass({AuthenticationFilter.class})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroProperties.class, ShiroCasProperties.class })
+@EnableConfigurationProperties({ ShiroProperties.class })
 public class ShiroCasWebAutoConfiguration extends AbstractShiroWebConfiguration {
 	
 	@Autowired

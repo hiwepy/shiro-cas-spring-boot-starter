@@ -28,7 +28,7 @@ public class CasRelativeUrlResolver implements UrlResolver {
 	public CasRelativeUrlResolver(String contextPath) {
 		this.contextPath = StringUtils.hasText(contextPath) ? contextPath : "/";
 		if (this.contextPath.endsWith("/")) {
-			this.contextPath = contextPath.substring(0, contextPath.length() - 1);
+			this.contextPath = this.contextPath.substring(0, this.contextPath.length() - 1);
 		}
 	}
 	

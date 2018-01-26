@@ -19,25 +19,33 @@ import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.shiro.mgt.SubjectFactory;
+import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
+import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.pac4j.cas.config.CasConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.buji.pac4j.filter.CallbackFilter;
+import io.buji.pac4j.filter.SecurityFilter;
 import io.buji.pac4j.subject.Pac4jSubjectFactory;
 
+
 @Configuration
-@ConditionalOnWebApplication
-@AutoConfigureBefore(ShiroCasWebAutoConfiguration.class)
-@ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroCasProperties.class, ShiroPac4jCasProperties.class })
+@AutoConfigureAfter({ ShiroEhCacheAutoConfiguration.class })
+@AutoConfigureBefore(value = { ShiroCasWebAutoConfiguration.class, ShiroWebAutoConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration.class"})
+@ConditionalOnClass({CallbackFilter.class, SecurityFilter.class, SecurityFilter.class, CasConfiguration.class})
+@ConditionalOnProperty(prefix = ShiroPac4jCasProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ ShiroProperties.class })
 public class ShiroPac4jCasWebAutoConfiguration extends AbstractShiroWebConfiguration {
 	
 	@Autowired

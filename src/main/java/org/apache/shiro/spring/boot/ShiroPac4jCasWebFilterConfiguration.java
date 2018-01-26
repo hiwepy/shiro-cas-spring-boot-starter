@@ -26,6 +26,7 @@ import org.apache.shiro.biz.realm.PrincipalRealmListener;
 import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
+import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
 import org.apache.shiro.spring.boot.cas.CasPac4jUserFilter;
 import org.apache.shiro.spring.boot.cas.CasRelativeUrlResolver;
 import org.apache.shiro.spring.boot.cas.ShiroCasPac4jFilterFactoryBean;
@@ -57,11 +58,11 @@ import org.pac4j.core.http.UrlResolver;
 import org.pac4j.http.authorization.authorizer.IpRegexpAuthorizer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -89,21 +90,21 @@ import io.buji.pac4j.filter.SecurityFilter;
  * @see http://blog.csdn.net/hxpjava1/article/details/77934056
  */
 @Configuration
-@ConditionalOnWebApplication
-@AutoConfigureBefore(ShiroCasWebFilterConfiguration.class)
-@ConditionalOnClass(CasConfiguration.class)
-@ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroProperties.class, ShiroPac4jCasProperties.class })
+@AutoConfigureAfter({ ShiroEhCacheAutoConfiguration.class })
+@AutoConfigureBefore(value = { ShiroCasWebFilterConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration"})
+@ConditionalOnClass({CallbackFilter.class, SecurityFilter.class, LogoutFilter.class, CasConfiguration.class})
+@ConditionalOnProperty(prefix = ShiroPac4jCasProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ ShiroPac4jCasProperties.class, ShiroCasProperties.class, ShiroProperties.class, ServerProperties.class })
 public class ShiroPac4jCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
-	
+
 	@Autowired
-	private ShiroProperties properties;
+	private ShiroPac4jCasProperties pac4jProperties;
 	@Autowired
 	private ShiroCasProperties casProperties;
 	@Autowired
-	private ShiroPac4jCasProperties pac4jProperties;
+	private ShiroProperties properties;
 	@Autowired
 	private ServerProperties serverProperties;
 	

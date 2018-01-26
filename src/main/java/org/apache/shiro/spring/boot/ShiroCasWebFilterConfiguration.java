@@ -40,9 +40,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -244,19 +244,19 @@ import org.springframework.util.StringUtils;
  * @see https://www.cnblogs.com/wangyang108/p/5844447.html
  */
 @Configuration
-@ConditionalOnWebApplication
-@AutoConfigureBefore(ShiroWebFilterConfiguration.class)
-@AutoConfigureAfter({ShiroEhCacheAutoConfiguration.class, ShiroPac4jCasWebFilterConfiguration.class})
+@AutoConfigureAfter({ ShiroPac4jCasWebFilterConfiguration.class, ShiroEhCacheAutoConfiguration.class})
+@AutoConfigureBefore(value = { ShiroWebFilterConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration"})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ ShiroProperties.class, ShiroCasProperties.class })
+@ConditionalOnClass({AuthenticationFilter.class})
+@EnableConfigurationProperties({ ShiroCasProperties.class, ShiroProperties.class, ServerProperties.class })
 public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 	
 	@Autowired
-	private ShiroProperties properties;
-	@Autowired
 	private ShiroCasProperties casProperties;
+	@Autowired
+	private ShiroProperties properties;
 	@Autowired
 	private ServerProperties serverProperties;
 	
