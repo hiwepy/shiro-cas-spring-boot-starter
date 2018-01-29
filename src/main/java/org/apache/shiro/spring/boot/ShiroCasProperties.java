@@ -3,11 +3,12 @@ package org.apache.shiro.spring.boot;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.shiro.spring.boot.cas.CasClientProperties;
 import org.jasig.cas.client.Protocol;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(ShiroCasProperties.PREFIX)
-public class ShiroCasProperties{
+public class ShiroCasProperties  extends CasClientProperties{
 
 	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";

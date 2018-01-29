@@ -1,5 +1,6 @@
 package org.apache.shiro.spring.boot;
 
+import org.apache.shiro.spring.boot.cas.CasClientProperties;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
@@ -9,7 +10,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(ShiroPac4jCasProperties.PREFIX)
-public class ShiroPac4jCasProperties{
+public class ShiroPac4jCasProperties extends CasClientProperties {
 
 	public static final String PREFIX = "shiro.pac4j";
 
