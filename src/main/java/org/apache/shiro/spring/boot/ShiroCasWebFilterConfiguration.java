@@ -244,7 +244,7 @@ import org.springframework.util.StringUtils;
  * @see https://www.cnblogs.com/wangyang108/p/5844447.html
  */
 @Configuration
-@AutoConfigureAfter({ ShiroPac4jCasWebFilterConfiguration.class, ShiroEhCacheAutoConfiguration.class})
+@AutoConfigureAfter({ ShiroEhCacheAutoConfiguration.class})
 @AutoConfigureBefore(value = { ShiroWebFilterConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration"})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @ConditionalOnClass({AuthenticationFilter.class})

@@ -22,19 +22,7 @@ shiro:
     /error* : anon
     /logo/** : anon
     /kaptcha* : anon
-    /pwdmgr/retake/** : anon
-    /pwdmgr/update/** : anon
-    /authz/login_code* : anon
-    /authz/login/getPublicKey* : anon
-    /authz/login/index* : anon
-    /authz/login/slogin* : authc
-    /druid/* : roles[admin]
-    /api/** : anon
-    /ws/** : anon
     /sockets/** : anon
-    /topic/** : anon
-    /monitoring/** : anon
-    /zfdsb/oauth2/accessToken : anon
     /logout : logout
     /callback : cas
     /index : sessionExpired,sessionControl,authc

@@ -108,24 +108,6 @@
 		    <version>${commons-io.version}</version>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/io.buji/buji-pac4j -->
-		<dependency>
-		    <groupId>io.buji</groupId>
-		    <artifactId>buji-pac4j</artifactId>
-		    <version>${buji-pac4j.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-http -->
-		<dependency>
-		    <groupId>org.pac4j</groupId>
-		    <artifactId>pac4j-http</artifactId>
-		    <version>${pac4j.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-cas -->
-		<dependency>
-		    <groupId>org.pac4j</groupId>
-		    <artifactId>pac4j-cas</artifactId>
-		    <version>${pac4j.version}</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jasig.cas.client/cas-client-core -->
 		<dependency>
 		    <groupId>org.jasig.cas.client</groupId>

@@ -23,6 +23,7 @@ import java.util.Properties;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.shiro.spring.boot.ShiroCasProperties;
+import org.apache.shiro.spring.boot.cas.exception.CasAuthenticationException;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.proxy.Cas20ProxyRetriever;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
@@ -38,7 +39,6 @@ import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.Saml11TicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
-import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class CasTicketValidatorUtils {
         } else if (Protocol.SAML11 == casProperties.getProtocol()) {
             return buildSAMLTicketValidator(casProperties);
         } else {
-            throw new TechnicalException("Unable to initialize the TicketValidator for protocol: " + casProperties.getProtocol().name());
+            throw new CasAuthenticationException("Unable to initialize the TicketValidator for protocol: " + casProperties.getProtocol().name());
         }
 	}
 	
