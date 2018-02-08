@@ -4,8 +4,8 @@
 shiro:
   enabled: true
   validate-captcha: false
-  login-url: /authz/login/slogin
-  redirect-url: /authz/login/index
+  login-url: /authz/login
+  redirect-url: /authz/index
   success-url: /index
   unauthorized-url: /error
   failure-url: /error
@@ -28,20 +28,13 @@ shiro:
     /index : sessionExpired,sessionControl,authc
     /** : sessionExpired,sessionControl,authc
   cas: 
-    enabled: true
     accept-any-proxy: true
-    cas-server-login-url: http://10.71.19.215:10000/cas/login
-    cas-server-logout-url: http://10.71.19.215:10000/cas/logout
-    cas-server-url-prefix: http://10.71.19.215:10000/cas
-    server-callback-url: /callback
-    server-name: http://10.71.33.167:8181
-    encoding: UTF-8
-    ignore-pattern: /webjars/;/assets/;/authz/login/slogin;/authz/login/getPublicKey;/logout;/callback
-    #ignore-url-pattern-type: com.zfsoft.boot.shiro.sso.AntPatternMatcherStrategy
-    ignore-url-pattern-type: com.zfsoft.boot.shiro.sso.ContainsPatternsUrlPatternMatcherStrategy
-  pac4j:
+    cas-server-login-url: http://127.0.0.1:10000/cas/login
+    cas-server-logout-url: http://127.0.0.1:10000/cas/logout
+    cas-server-url-prefix: http://127.0.0.1:10000/cas
     enabled: true
-    callback-url: /callback
-    cas-client-name: cas
-    client-name: cas
-    authorizers: securityheaders, cas
+    encoding: UTF-8
+    server-callback-url: /callback
+    server-name: http://127.0.0.1:8080
+    ignore-pattern: /webjars/;/assets/;/authz/login;/logout;/callback
+    ignore-url-pattern-type: org.apache.shiro.spring.boot.cas.ContainsPatternsUrlPatternMatcherStrategy

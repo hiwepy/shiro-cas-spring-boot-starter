@@ -13,7 +13,7 @@ public class ShiroCasProperties  extends CasClientProperties{
 	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 	public static final String PREFIX = "shiro.cas";
-
+	
 	public static enum CaMode {
 		/** 中心认证：全部去认证中心进行认证. */
 		sso,

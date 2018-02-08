@@ -8,19 +8,16 @@ import java.util.Map.Entry;
 
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
-import org.apache.shiro.biz.web.filter.HttpServletSessionExpiredFilter;
 import org.apache.shiro.biz.web.filter.authc.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
-import org.apache.shiro.spring.boot.cache.ShiroEhCacheAutoConfiguration;
 import org.apache.shiro.spring.boot.cas.ShiroCasFilterFactoryBean;
 import org.apache.shiro.spring.boot.cas.filter.CasAuthenticatingFilter;
 import org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter;
 import org.apache.shiro.spring.boot.cas.principal.CasPrincipalRepository;
 import org.apache.shiro.spring.boot.cas.realm.CasInternalAuthorizingRealm;
 import org.apache.shiro.spring.boot.utils.CasUrlUtils;
-import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
@@ -38,11 +35,11 @@ import org.jasig.cas.client.validation.Saml11TicketValidationFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -244,11 +241,14 @@ import org.springframework.util.StringUtils;
  * @see https://www.cnblogs.com/wangyang108/p/5844447.html
  */
 @Configuration
-@AutoConfigureAfter({ ShiroEhCacheAutoConfiguration.class})
-@AutoConfigureBefore(value = { ShiroWebFilterConfiguration.class}, name = {"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration"})
+@AutoConfigureBefore( name = {
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration",  // shiro-spring-boot-web-starter
+	"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration" // spring-boot-starter-shiro-biz
+})
+@ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @ConditionalOnClass({AuthenticationFilter.class})
-@EnableConfigurationProperties({ ShiroCasProperties.class, ShiroProperties.class, ServerProperties.class })
+@EnableConfigurationProperties({ ShiroCasProperties.class, ShiroBizProperties.class, ServerProperties.class })
 public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
@@ -256,7 +256,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	@Autowired
 	private ShiroCasProperties casProperties;
 	@Autowired
-	private ShiroProperties properties;
+	private ShiroBizProperties bizProperties;
 	@Autowired
 	private ServerProperties serverProperties;
 	
@@ -456,7 +456,6 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
 	@Bean("loginListeners")
-	@ConditionalOnMissingBean(name = "loginListeners")
 	public List<LoginListener> loginListeners() {
 
 		List<LoginListener> loginListeners = new ArrayList<LoginListener>();
@@ -476,7 +475,6 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
 	@Bean("realmListeners")
-	@ConditionalOnMissingBean(name = "realmListeners")
 	public List<PrincipalRealmListener> realmListeners() {
 
 		List<PrincipalRealmListener> realmListeners = new ArrayList<PrincipalRealmListener>();
@@ -496,7 +494,6 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 	 */
 	@Bean("logoutListeners")
-	@ConditionalOnMissingBean(name = "logoutListeners")
 	public List<LogoutListener> logoutListeners() {
 
 		List<LogoutListener> logoutListeners = new ArrayList<LogoutListener>();
@@ -513,17 +510,6 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	}
 	
 	/**
-	 * 默认的Session过期过滤器 ：解决Ajax请求期间会话过期异常处理
-	 */
-	@Bean("sessionExpired")
-	@ConditionalOnMissingBean(name = "sessionExpired")
-	public FilterRegistrationBean sessionExpiredFilter(){
-		FilterRegistrationBean registration = new FilterRegistrationBean(new HttpServletSessionExpiredFilter()); 
-	    registration.setEnabled(false); 
-	    return registration;
-	}
-	
-	/**
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
 	 */
 	@Bean("logout")
@@ -536,9 +522,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		//登录注销后的重定向地址：直接进入登录页面
 		if( CaMode.sso.compareTo(casProperties.getCaMode()) == 0) {
 			logoutFilter.setCasLogin(true);
-			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getContextPath(), casProperties.getServerCallbackUrl()));
+			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getContextPath(), bizProperties.getLoginUrl()));
 		} else {
-			logoutFilter.setRedirectUrl(properties.getLoginUrl());
+			logoutFilter.setRedirectUrl(bizProperties.getLoginUrl());
 		}
 		registration.setFilter(logoutFilter);
 		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
@@ -553,7 +539,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	public FilterRegistrationBean casFilter(ShiroCasProperties properties){
 		FilterRegistrationBean registration = new FilterRegistrationBean(); 
 		CasAuthenticatingFilter casSsoFilter = new CasAuthenticatingFilter();
-		casSsoFilter.setFailureUrl(properties.getFailureUrl());
+		casSsoFilter.setFailureUrl(bizProperties.getFailureUrl());
+		casSsoFilter.setSuccessUrl(bizProperties.getSuccessUrl());
 		registration.setFilter(casSsoFilter);
 	    registration.setEnabled(false); 
 	    return registration;
@@ -571,30 +558,29 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		//Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 		casRealm.setRealmsListeners(realmsListeners);
 		//缓存相关的配置：采用提供的默认配置即可
-		casRealm.setCachingEnabled(properties.isCachingEnabled());
+		casRealm.setCachingEnabled(bizProperties.isCachingEnabled());
 		//认证缓存配置
-		casRealm.setAuthenticationCachingEnabled(properties.isAuthenticationCachingEnabled());
-		casRealm.setAuthenticationCacheName(properties.getAuthenticationCacheName());
+		casRealm.setAuthenticationCachingEnabled(bizProperties.isAuthenticationCachingEnabled());
+		casRealm.setAuthenticationCacheName(bizProperties.getAuthenticationCacheName());
 		//授权缓存配置
-		casRealm.setAuthorizationCachingEnabled(properties.isAuthorizationCachingEnabled());
-		casRealm.setAuthorizationCacheName(properties.getAuthorizationCacheName());
+		casRealm.setAuthorizationCachingEnabled(bizProperties.isAuthorizationCachingEnabled());
+		casRealm.setAuthorizationCacheName(bizProperties.getAuthorizationCacheName());
 		
 		return casRealm;
 	}
 	
 	@Bean
-    @ConditionalOnMissingBean
     @Override
     protected ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		
 		ShiroFilterFactoryBean filterFactoryBean = new ShiroCasFilterFactoryBean();
         
         //登录地址：会话不存在时访问的地址
-  		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getContextPath(), successUrl));
+  		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getContextPath(), casProperties.getServerCallbackUrl()));
   		//系统主页：登录成功后跳转路径
-  		filterFactoryBean.setSuccessUrl(properties.getSuccessUrl());
+  		filterFactoryBean.setSuccessUrl(bizProperties.getSuccessUrl());
   		//异常页面：无权限时的跳转路径
-  		filterFactoryBean.setUnauthorizedUrl(properties.getUnauthorizedUrl());
+  		filterFactoryBean.setUnauthorizedUrl(bizProperties.getUnauthorizedUrl());
       
   		//必须设置 SecurityManager
  		filterFactoryBean.setSecurityManager(securityManager);
@@ -605,8 +591,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
         
     }
 
-    @Bean(name = "filterShiroFilterRegistrationBean")
-    @ConditionalOnMissingBean
+	@Bean(name = "filterShiroFilterRegistrationBean")
     protected FilterRegistrationBean filterShiroFilterRegistrationBean() throws Exception {
 
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
