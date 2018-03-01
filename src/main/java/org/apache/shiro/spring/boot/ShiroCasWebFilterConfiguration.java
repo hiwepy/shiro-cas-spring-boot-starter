@@ -522,7 +522,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		//登录注销后的重定向地址：直接进入登录页面
 		if( CaMode.sso.compareTo(casProperties.getCaMode()) == 0) {
 			logoutFilter.setCasLogin(true);
-			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getContextPath(), bizProperties.getLoginUrl()));
+			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), bizProperties.getLoginUrl()));
 		} else {
 			logoutFilter.setRedirectUrl(bizProperties.getLoginUrl());
 		}
@@ -576,7 +576,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		ShiroFilterFactoryBean filterFactoryBean = new ShiroCasFilterFactoryBean();
         
         //登录地址：会话不存在时访问的地址
-  		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getContextPath(), casProperties.getServerCallbackUrl()));
+  		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), casProperties.getServerCallbackUrl()));
   		//系统主页：登录成功后跳转路径
   		filterFactoryBean.setSuccessUrl(bizProperties.getSuccessUrl());
   		//异常页面：无权限时的跳转路径
