@@ -26,8 +26,10 @@ import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.authentication.Saml11AuthenticationFilter;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
+import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
+import org.jasig.cas.client.validation.AbstractTicketValidationFilter;
 import org.jasig.cas.client.validation.Cas10TicketValidationFilter;
 import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
@@ -276,8 +278,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 该过滤器负责对Ticket的校验工作
 	 */
 	@Bean
-	public FilterRegistrationBean ticketValidationFilter() {
-		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
+	public FilterRegistrationBean<AbstractTicketValidationFilter> ticketValidationFilter() {
+		FilterRegistrationBean<AbstractTicketValidationFilter> filterRegistration = new FilterRegistrationBean<AbstractTicketValidationFilter>();
 		filterRegistration.setEnabled(casProperties.isEnabled()); 
 		if(Protocol.CAS1.equals(casProperties.getProtocol())) {
 			filterRegistration.setFilter(new Cas10TicketValidationFilter());
@@ -385,8 +387,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 该过滤器负责用户的认证工作
 	 */
 	@Bean
-	public FilterRegistrationBean authenticationFilter() {
-		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
+	public FilterRegistrationBean<AbstractCasFilter> authenticationFilter() {
+		FilterRegistrationBean<AbstractCasFilter> filterRegistration = new FilterRegistrationBean<AbstractCasFilter>();
 		if (Protocol.SAML11.equals(casProperties.getProtocol())) {
 			filterRegistration.setFilter(new Saml11AuthenticationFilter());
 		} else {
@@ -423,8 +425,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 该过滤器对HttpServletRequest请求包装， 可通过HttpServletRequest的getRemoteUser()方法获得登录用户的登录名
 	 */
 	@Bean
-	public FilterRegistrationBean requestWrapperFilter() {
-		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
+	public FilterRegistrationBean<HttpServletRequestWrapperFilter> requestWrapperFilter() {
+		FilterRegistrationBean<HttpServletRequestWrapperFilter> filterRegistration = new FilterRegistrationBean<HttpServletRequestWrapperFilter>();
 		filterRegistration.setFilter(new HttpServletRequestWrapperFilter());
 		filterRegistration.setEnabled(casProperties.isEnabled()); 
 		filterRegistration.addInitParameter(ConfigurationKeys.IGNORE_CASE.getName(), String.valueOf(casProperties.isIgnoreCase()));
@@ -443,8 +445,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 * 这个类把Assertion信息放在ThreadLocal变量中，这样应用程序不在web层也能够获取到当前登录信息
 	 */
 	@Bean
-	public FilterRegistrationBean assertionThreadLocalFilter() {
-		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
+	public FilterRegistrationBean<AssertionThreadLocalFilter> assertionThreadLocalFilter() {
+		FilterRegistrationBean<AssertionThreadLocalFilter> filterRegistration = new FilterRegistrationBean<AssertionThreadLocalFilter>();
 		filterRegistration.setFilter(new AssertionThreadLocalFilter());
 		filterRegistration.setEnabled(casProperties.isEnabled());
 		filterRegistration.addUrlPatterns(casProperties.getAssertionThreadLocalFilterUrlPatterns());
@@ -514,9 +516,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	 */
 	@Bean("logout")
 	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean logoutFilter(List<LogoutListener> logoutListeners){
+	public FilterRegistrationBean<CasLogoutFilter> logoutFilter(List<LogoutListener> logoutListeners){
 		
-		FilterRegistrationBean registration = new FilterRegistrationBean(); 
+		FilterRegistrationBean<CasLogoutFilter> registration = new FilterRegistrationBean<CasLogoutFilter>(); 
 		CasLogoutFilter logoutFilter = new CasLogoutFilter();
 		
 		//登录注销后的重定向地址：直接进入登录页面
@@ -536,8 +538,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	
 	@Bean("cas")
 	@ConditionalOnMissingBean(name = "cas")
-	public FilterRegistrationBean casFilter(ShiroCasProperties properties){
-		FilterRegistrationBean registration = new FilterRegistrationBean(); 
+	public FilterRegistrationBean<CasAuthenticatingFilter> casFilter(ShiroCasProperties properties){
+		FilterRegistrationBean<CasAuthenticatingFilter> registration = new FilterRegistrationBean<CasAuthenticatingFilter>(); 
 		CasAuthenticatingFilter casSsoFilter = new CasAuthenticatingFilter();
 		casSsoFilter.setFailureUrl(bizProperties.getFailureUrl());
 		casSsoFilter.setSuccessUrl(bizProperties.getSuccessUrl());
@@ -592,9 +594,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
     }
 
 	@Bean(name = "filterShiroFilterRegistrationBean")
-    protected FilterRegistrationBean filterShiroFilterRegistrationBean() throws Exception {
+    protected FilterRegistrationBean<AbstractShiroFilter> filterShiroFilterRegistrationBean() throws Exception {
 
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        FilterRegistrationBean<AbstractShiroFilter> filterRegistrationBean = new FilterRegistrationBean<AbstractShiroFilter>();
         filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
         filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
 
