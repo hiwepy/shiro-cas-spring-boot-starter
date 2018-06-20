@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
-import org.apache.shiro.biz.web.filter.authc.LoginListener;
-import org.apache.shiro.biz.web.filter.authc.LogoutListener;
+import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
+import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
 import org.apache.shiro.spring.boot.cas.ShiroCasFilterFactoryBean;
