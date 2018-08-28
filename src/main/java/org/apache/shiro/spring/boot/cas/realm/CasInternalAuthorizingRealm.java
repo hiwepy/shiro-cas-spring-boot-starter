@@ -20,8 +20,7 @@ import java.util.Map;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.biz.authc.token.DelegateAuthenticationToken;
-import org.apache.shiro.biz.realm.InternalAuthorizingRealm;
+import org.apache.shiro.biz.realm.AbstractAuthorizingRealm;
 import org.apache.shiro.spring.boot.ShiroCasProperties;
 import org.apache.shiro.spring.boot.cas.token.CasToken;
 import org.apache.shiro.spring.boot.utils.CasTicketValidatorUtils;
@@ -33,7 +32,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CasInternalAuthorizingRealm extends InternalAuthorizingRealm {
+public class CasInternalAuthorizingRealm extends AbstractAuthorizingRealm<String> {
 
     private static Logger log = LoggerFactory.getLogger(CasInternalAuthorizingRealm.class);
     
@@ -67,7 +66,7 @@ public class CasInternalAuthorizingRealm extends InternalAuthorizingRealm {
      * @throws AuthenticationException if there is an error during authentication.
      */
     @Override
-    protected AuthenticationInfo doGetInternalAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         
     	CasToken casToken = (CasToken) token;
         if (token == null) {
@@ -125,14 +124,10 @@ public class CasInternalAuthorizingRealm extends InternalAuthorizingRealm {
 			}
 		}
 		
-		return super.doGetInternalAuthenticationInfo(casToken);
+		return super.doGetAuthenticationInfo(casToken);
         
     }
 
-	@Override
-	protected DelegateAuthenticationToken createDelegateAuthenticationToken(AuthenticationToken token) {
-		return (DelegateAuthenticationToken) token;
-	}
 
 	public ShiroCasProperties getCasProperties() {
 		return casProperties;

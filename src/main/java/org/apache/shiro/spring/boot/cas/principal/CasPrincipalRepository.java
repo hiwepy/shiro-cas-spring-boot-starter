@@ -15,8 +15,8 @@
  */
 package org.apache.shiro.spring.boot.cas.principal;
 
-import org.apache.shiro.biz.principal.PrincipalRepository;
+import org.apache.shiro.biz.authz.principal.ShiroPrincipalRepository;
 
-public interface CasPrincipalRepository extends PrincipalRepository {
+public interface CasPrincipalRepository extends ShiroPrincipalRepository<String> {
 
 }

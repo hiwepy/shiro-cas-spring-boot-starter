@@ -25,7 +25,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.biz.realm.ExternalAuthorizingRealm;
+import org.apache.shiro.biz.realm.AbstractAuthorizingRealm;
 import org.apache.shiro.spring.boot.ShiroCasProperties;
 import org.apache.shiro.spring.boot.cas.exception.CasAuthenticationException;
 import org.apache.shiro.spring.boot.cas.token.CasToken;
@@ -42,7 +42,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
+public class CasExternalAuthorizingRealm extends AbstractAuthorizingRealm<String> {
 
     private static Logger log = LoggerFactory.getLogger(CasExternalAuthorizingRealm.class);
 
@@ -87,7 +87,7 @@ public class CasExternalAuthorizingRealm extends ExternalAuthorizingRealm {
      * @throws AuthenticationException if there is an error during authentication.
      */
     @Override
-    protected AuthenticationInfo doGetExternalAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         
     	CasToken casToken = (CasToken) token;
         if (token == null) {
