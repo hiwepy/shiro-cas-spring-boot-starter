@@ -1,14 +1,9 @@
 package org.apache.shiro.spring.boot;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.biz.realm.PrincipalRealmListener;
-import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
@@ -34,7 +29,6 @@ import org.jasig.cas.client.validation.Cas10TicketValidationFilter;
 import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Saml11TicketValidationFilter;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -46,12 +40,9 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -251,9 +242,7 @@ import org.springframework.util.StringUtils;
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @ConditionalOnClass({AuthenticationFilter.class})
 @EnableConfigurationProperties({ ShiroCasProperties.class, ShiroBizProperties.class, ServerProperties.class })
-public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration implements ApplicationContextAware {
-
-	private ApplicationContext applicationContext;
+public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration {
 	
 	@Autowired
 	private ShiroCasProperties casProperties;
@@ -455,63 +444,6 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	}
 	
 	/**
-	 * 登录监听：实现该接口可监听账号登录失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-	 */
-	@Bean("loginListeners")
-	public List<LoginListener> loginListeners() {
-
-		List<LoginListener> loginListeners = new ArrayList<LoginListener>();
-		
-		Map<String, LoginListener> beansOfType = getApplicationContext().getBeansOfType(LoginListener.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, LoginListener>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				loginListeners.add(ite.next().getValue());
-			}
-		}
-		
-		return loginListeners;
-	}
-	
-	/**
-	 * Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-	 */
-	@Bean("realmListeners")
-	public List<PrincipalRealmListener> realmListeners() {
-
-		List<PrincipalRealmListener> realmListeners = new ArrayList<PrincipalRealmListener>();
-		
-		Map<String, PrincipalRealmListener> beansOfType = getApplicationContext().getBeansOfType(PrincipalRealmListener.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, PrincipalRealmListener>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				realmListeners.add(ite.next().getValue());
-			}
-		}
-		
-		return realmListeners;
-	}
-	
-	/**
-	 * 注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-	 */
-	@Bean("logoutListeners")
-	public List<LogoutListener> logoutListeners() {
-
-		List<LogoutListener> logoutListeners = new ArrayList<LogoutListener>();
-		
-		Map<String, LogoutListener> beansOfType = getApplicationContext().getBeansOfType(LogoutListener.class);
-		if (!ObjectUtils.isEmpty(beansOfType)) {
-			Iterator<Entry<String, LogoutListener>> ite = beansOfType.entrySet().iterator();
-			while (ite.hasNext()) {
-				logoutListeners.add(ite.next().getValue());
-			}
-		}
-		
-		return logoutListeners;
-	}
-	
-	/**
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
 	 */
 	@Bean("logout")
@@ -603,14 +535,4 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
         return filterRegistrationBean;
     }
     
-	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	
 }
