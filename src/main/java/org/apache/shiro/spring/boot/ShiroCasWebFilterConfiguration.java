@@ -11,7 +11,7 @@ import org.apache.shiro.spring.boot.cas.ShiroCasFilterFactoryBean;
 import org.apache.shiro.spring.boot.cas.filter.CasAuthenticatingFilter;
 import org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter;
 import org.apache.shiro.spring.boot.cas.principal.CasPrincipalRepository;
-import org.apache.shiro.spring.boot.cas.realm.CasInternalAuthorizingRealm;
+import org.apache.shiro.spring.boot.cas.realm.CasStatefulAuthorizingRealm;
 import org.apache.shiro.spring.boot.utils.CasUrlUtils;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
@@ -484,7 +484,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	public Realm casRealm(@Qualifier("casRepository") CasPrincipalRepository repository,
 			List<PrincipalRealmListener> realmsListeners) {
 		
-		CasInternalAuthorizingRealm casRealm = new CasInternalAuthorizingRealm(casProperties);
+		CasStatefulAuthorizingRealm casRealm = new CasStatefulAuthorizingRealm(casProperties);
 		//认证账号信息提供实现：认证信息、角色信息、权限信息；业务系统需要自己实现该接口
 		casRealm.setRepository(repository);
 		//凭证匹配器：该对象主要做密码校验

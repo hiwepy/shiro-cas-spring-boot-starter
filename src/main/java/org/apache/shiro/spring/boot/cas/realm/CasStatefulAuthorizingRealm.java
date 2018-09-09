@@ -32,15 +32,19 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CasInternalAuthorizingRealm extends AbstractAuthorizingRealm<String> {
+/**
+ * Cas Stateful AuthorizingRealm
+ * @author <a href="https://github.com/vindell">vindell</a>
+ */
+public class CasStatefulAuthorizingRealm extends AbstractAuthorizingRealm<String> {
 
-    private static Logger log = LoggerFactory.getLogger(CasInternalAuthorizingRealm.class);
+    private static Logger log = LoggerFactory.getLogger(CasStatefulAuthorizingRealm.class);
     
     // this class from the CAS client is used to validate a service ticket on CAS server
     private TicketValidator ticketValidator;
     private ShiroCasProperties casProperties;
     
-    public CasInternalAuthorizingRealm(ShiroCasProperties casProperties) {
+    public CasStatefulAuthorizingRealm(ShiroCasProperties casProperties) {
         setAuthenticationTokenClass(CasToken.class);
         setCasProperties(casProperties);
     }
