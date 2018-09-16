@@ -455,7 +455,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		
 		//登录注销后的重定向地址：直接进入登录页面
 		if( CaMode.sso.compareTo(casProperties.getCaMode()) == 0) {
-			logoutFilter.setCasLogin(true);
+			//logoutFilter.setCasLogin(true);
 			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), bizProperties.getLoginUrl()));
 		} else {
 			logoutFilter.setRedirectUrl(bizProperties.getLoginUrl());
