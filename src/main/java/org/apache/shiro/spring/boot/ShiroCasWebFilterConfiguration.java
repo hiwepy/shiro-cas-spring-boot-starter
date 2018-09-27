@@ -3,7 +3,7 @@ package org.apache.shiro.spring.boot;
 import java.util.List;
 
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
-import org.apache.shiro.biz.realm.PrincipalRealmListener;
+import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
@@ -482,7 +482,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	
 	@Bean
 	public Realm casRealm(@Qualifier("casRepository") CasPrincipalRepository repository,
-			List<PrincipalRealmListener> realmsListeners) {
+			List<AuthorizingRealmListener> realmsListeners) {
 		
 		CasStatefulAuthorizingRealm casRealm = new CasStatefulAuthorizingRealm(casProperties);
 		//认证账号信息提供实现：认证信息、角色信息、权限信息；业务系统需要自己实现该接口
