@@ -13,7 +13,7 @@
 	<groupId>com.github.vindell</groupId>
 	<artifactId>spring-boot-starter-shiro-cas</artifactId>
 	<description>Spring Boot Starter For Shiro With Cas</description>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/vindell/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -373,7 +373,7 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<shiro-biz.version>1.0.0-SNAPSHOT</shiro-biz.version>
+		<spring-boot-starter-shiro-biz.version>1.0.0.RELEASE</spring-boot-starter-shiro-biz.version>
 		<woodstox-asl.version>4.4.1</woodstox-asl.version>
 	</properties>
 	
@@ -454,7 +454,7 @@
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>spring-boot-starter-shiro-biz</artifactId>
-			<version>${shiro-biz.version}</version>
+			<version>${spring-boot-starter-shiro-biz.version}</version>
 		</dependency>
 		
 	</dependencies>

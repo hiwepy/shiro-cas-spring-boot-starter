@@ -55,8 +55,7 @@ public class CasTicketValidatorUtils {
 	 * Constructs a Cas20ServiceTicketValidator or a Cas20ProxyTicketValidator based
 	 * on supplied parameters.
 	 *
-	 * @param filterConfig
-	 *            the Filter Configuration object.
+	 * @param casProperties the ShiroCasProperties object.
 	 * @return a fully constructed TicketValidator.
 	 */
 	public static final TicketValidator createTicketValidator(final ShiroCasProperties casProperties) {

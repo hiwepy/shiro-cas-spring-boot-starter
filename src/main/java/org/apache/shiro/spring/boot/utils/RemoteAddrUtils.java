@@ -28,11 +28,9 @@ public class RemoteAddrUtils {
 	private static String localIP = "127.0.0.1";       
 	
 	/**
-	 * 
-	 * @description	： 获取请求客户端IP地址，支持代理服务器
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param request
-	 * @return
+	 * 获取请求客户端IP地址，支持代理服务器
+	 * @param request {@link HttpServletRequest} instance
+	 * @return IP地址
 	 */
 	public static String getRemoteAddr(HttpServletRequest request) {
 		
@@ -40,7 +38,7 @@ public class RemoteAddrUtils {
 		String remoteAddr = null;
 		for (String header : headers) {
 			remoteAddr = request.getHeader(header);
-			if(!StringUtils.isEmpty(remoteAddr) && !StringUtils.equals(localIP, "unknown")){
+			if(!StringUtils.isEmpty(remoteAddr) && !StringUtils.equals(remoteAddr, "unknown")){
 				break;
 			}
 		}

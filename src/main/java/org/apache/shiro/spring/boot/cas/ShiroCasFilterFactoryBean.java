@@ -18,12 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 
 /**
- * 
- * @className ： ShiroCasFilterFactoryBean
- * @description ： TODO(描述这个类的作用)
- * @author ： <a href="https://github.com/vindell">vindell</a>
- * @date ： 2018年1月23日 下午4:04:18
- * @version V1.0
+ * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
 public class ShiroCasFilterFactoryBean extends ShiroFilterProxyFactoryBean implements ApplicationContextAware {
 
