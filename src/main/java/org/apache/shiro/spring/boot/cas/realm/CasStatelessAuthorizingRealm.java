@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * Cas Stateless AuthorizingRealm
  * @author <a href="https://github.com/vindell">vindell</a>
  */
-public class CasStatelessAuthorizingRealm extends AbstractAuthorizingRealm<String> {
+public class CasStatelessAuthorizingRealm extends AbstractAuthorizingRealm {
 
     private static Logger log = LoggerFactory.getLogger(CasStatelessAuthorizingRealm.class);
 

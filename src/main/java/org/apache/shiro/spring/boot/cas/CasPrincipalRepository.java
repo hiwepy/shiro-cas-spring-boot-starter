@@ -13,10 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.shiro.spring.boot.cas.principal;
+package org.apache.shiro.spring.boot.cas;
 
-import org.apache.shiro.biz.authz.principal.ShiroPrincipalRepository;
+import org.apache.shiro.biz.authz.principal.ShiroPrincipalRepositoryImpl;
 
-public interface CasPrincipalRepository extends ShiroPrincipalRepository<String> {
+public abstract class CasPrincipalRepository extends ShiroPrincipalRepositoryImpl {
 
+	
 }
