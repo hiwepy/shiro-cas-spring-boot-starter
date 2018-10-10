@@ -14,7 +14,7 @@
     <dependency>
     	<groupId>${project.groupId}</groupId>
     	<artifactId>spring-boot-starter-shiro-cas</artifactId>
-    	<version>${project.version}</version>
+    	<version>1.0.1.RELEASE</version>
     </dependency>
 
 ### Sample ： 
@@ -25,46 +25,76 @@
 
  > application.yml
 
-	################################################################################################################  
-	###Shiro 权限控制基本配置：  
-	################################################################################################################
-	shiro:
-	  enabled: true
-	  validate-captcha: false
-	  login-url: /authz/login
-	  redirect-url: /authz/index
-	  success-url: /index
-	  unauthorized-url: /error
-	  failure-url: /error
-	  annotations: 
-	    enabled: true
-	  web: 
-	    enabled: true
-	  filter-chain-definition-map: 
-	    / : anon
-	    /*favicon.ico : anon
-	    /webjars/** : anon
-	    /assets/** : anon
-	    /html/** : anon
-	    /error* : anon
-	    /logo/** : anon
-	    /kaptcha* : anon
-	    /sockets/** : anon
-	    /logout : logout
-	    /callback : cas
-	    /index : sessionExpired,sessionControl,authc
-	    /** : sessionExpired,sessionControl,authc
-	  cas: 
-	    accept-any-proxy: true
-	    cas-server-login-url: http://127.0.0.1:10000/cas/login
-	    cas-server-logout-url: http://127.0.0.1:10000/cas/logout
-	    cas-server-url-prefix: http://127.0.0.1:10000/cas
-	    enabled: true
-	    encoding: UTF-8
-	    server-callback-url: /callback
-	    server-name: http://127.0.0.1:8080
-	    ignore-pattern: /webjars/;/assets/;/authz/login;/logout;/callback
-	    ignore-url-pattern-type: org.apache.shiro.spring.boot.cas.ContainsPatternsUrlPatternMatcherStrategy
+################################################################################################################  
+###Shiro 权限控制基本配置：  
+################################################################################################################
+shiro:
+  annotations: 
+    enabled: true
+    proxy-target-class: true
+  authentication-caching-enabled: false
+  authentication-cache-name: SHIRO-AUTHC
+  authorization-caching-enabled: false 
+  authorization-cache-name: SHIRO-AUTHZ
+  caching-enabled: false
+  cache:
+    type: ehcache
+  enabled: true
+  kaptcha:
+    enabled: true
+    retry-times-when-access-denied: 3
+  failure-url: /error
+  http:
+    header:
+      access-control-allow-methods: PUT,POST,GET,DELETE,OPTIONS
+  login-url: /authz/login/slogin
+  redirect-url: /authz/login/index
+  success-url: /index
+  session-creation-enabled: false
+  session-validation-scheduler-enabled: false
+  session-validation-interval: 20000
+  session-stateless: true
+  session-storage-enabled: false
+  session-timeout: 1800000
+  unauthorized-url: /error
+  user-native-session-manager: false
+  web: 
+    enabled: true
+  filter-chain-definition-map: 
+    '[/]' : anon
+    '[/**/favicon.ico]' : anon
+    '[/webjars/**]' : anon
+    '[/assets/**]' : anon
+    '[/error*]' : anon
+    '[/logo/**]' : anon
+    '[/swagger-ui.html**]' : anon
+    '[/swagger-resources/**]' : anon
+    '[/v2/**]' : anon
+    '[/kaptcha*]' : anon
+    '[/admin]' : anon
+    '[/admin/assets/**]' : anon
+    '[/admin/applications]' : anon
+    '[/admin/applications/**]' : anon
+    '[/admin/notifications]' : anon
+    '[/admin/notifications/**]' : anon
+    '[/admin/instances]' : anon
+    '[/admin/instances/**]' : anon
+    '[/sockets/**]' : anon
+    '[/expiry]' : cros,withinExpiry
+    '[/authz/login/slogin]' : cros,authc
+    '[/logout]' : logout
+    '[/**]' : cros,authc
+  cas: 
+    accept-any-proxy: true
+    cas-server-login-url: http://127.0.0.1:10000/cas/login
+    cas-server-logout-url: http://127.0.0.1:10000/cas/logout
+    cas-server-url-prefix: http://127.0.0.1:10000/cas
+    enabled: true
+    encoding: UTF-8
+    server-callback-url: /callback
+    server-name: http://127.0.0.1:8080
+    ignore-pattern: /webjars/;/assets/;/authz/login;/logout;/callback
+    ignore-url-pattern-type: org.apache.shiro.spring.boot.cas.ContainsPatternsUrlPatternMatcherStrategy
 
 
 ### 参考资料
