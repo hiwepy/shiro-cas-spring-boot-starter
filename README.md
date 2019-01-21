@@ -14,7 +14,7 @@
     <dependency>
     	<groupId>${project.groupId}</groupId>
     	<artifactId>spring-boot-starter-shiro-cas</artifactId>
-    	<version>1.0.1.RELEASE</version>
+    	<version>${project.version}</version>
     </dependency>
 
 ### Sample ： 
