@@ -7,7 +7,14 @@ import org.apache.shiro.spring.boot.cas.CasClientProperties;
 import org.jasig.cas.client.Protocol;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @ConfigurationProperties(ShiroCasProperties.PREFIX)
+@Getter
+@Setter
+@ToString
 public class ShiroCasProperties  extends CasClientProperties{
 
 	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
