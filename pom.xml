@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	
-	<groupId>com.github.vindell</groupId>
+	<groupId>com.github.hiwepy</groupId>
 	<artifactId>spring-boot-starter-shiro-cas</artifactId>
 	<description>Spring Boot Starter For Shiro With Cas</description>
 	<version>1.0.3-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>https://github.com/vindell/${project.artifactId}</url>
+	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -26,15 +26,15 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https:github.com/vindell/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:https:github.com/vindell/${project.artifactId}.git</developerConnection>
-		<url>https:github.com/vindell/${project.artifactId}</url>
+		<connection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</developerConnection>
+		<url>https:github.com/hiwepy/${project.artifactId}</url>
 		<tag>${project.artifactId}</tag>
 	</scm>
 
 	<developers>
 		<developer>
-			<name>vindell</name>
+			<name>wandl</name>
 			<email>hnxyhcwdl1003@163.com</email>
 			<roles>
 				<role>developer</role>
@@ -373,8 +373,8 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.22.1</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<shiro-cas.version>1.4.1</shiro-cas.version>
-		<spring-boot-starter-shiro-biz.version>1.0.4.RELEASE</spring-boot-starter-shiro-biz.version>
+		<shiro-cas.version>1.4.2</shiro-cas.version>
+		<spring-boot-starter-shiro-biz.version>1.0.6-SNAPSHOT</spring-boot-starter-shiro-biz.version>
 		<woodstox-asl.version>4.4.1</woodstox-asl.version>
 	</properties>
 	
@@ -460,9 +460,9 @@
 		    <version>${woodstox-asl.version}</version>
 		</dependency>
 		
-		<!-- https://github.com/vindell/spring-boot-starter-shiro-biz -->
+		<!-- https://github.com/hiwepy/spring-boot-starter-shiro-biz -->
 		<dependency>
-			<groupId>com.github.vindell</groupId>
+			<groupId>com.github.hiwepy</groupId>
 			<artifactId>spring-boot-starter-shiro-biz</artifactId>
 			<version>${spring-boot-starter-shiro-biz.version}</version>
 		</dependency>
