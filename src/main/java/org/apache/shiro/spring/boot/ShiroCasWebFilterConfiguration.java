@@ -1,9 +1,13 @@
 package org.apache.shiro.spring.boot;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
+import org.apache.shiro.biz.authc.AuthenticationFailureHandler;
+import org.apache.shiro.biz.authc.AuthenticationSuccessHandler;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
+import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
@@ -29,6 +33,7 @@ import org.jasig.cas.client.validation.Cas10TicketValidationFilter;
 import org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.jasig.cas.client.validation.Saml11TicketValidationFilter;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -266,9 +271,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	/*
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
 	 */
-	@Bean("logout")
-	@ConditionalOnMissingBean(name = "logout")
-	public FilterRegistrationBean<CasLogoutFilter> logoutFilter(List<LogoutListener> logoutListeners){
+	@Bean("casLogout")
+	@ConditionalOnMissingBean(name = "casLogout")
+	public FilterRegistrationBean<CasLogoutFilter> casLogoutFilter(List<LogoutListener> logoutListeners){
 		
 		FilterRegistrationBean<CasLogoutFilter> registration = new FilterRegistrationBean<CasLogoutFilter>(); 
 		CasLogoutFilter logoutFilter = new CasLogoutFilter();
@@ -290,9 +295,17 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	
 	@Bean("cas")
 	@ConditionalOnMissingBean(name = "cas")
-	public FilterRegistrationBean<CasAuthenticatingFilter> casFilter(ShiroCasProperties properties){
+	public FilterRegistrationBean<CasAuthenticatingFilter> casFilter(
+			ObjectProvider<LoginListener> loginListenerProvider,
+			@Autowired(required = false) List<AuthenticationSuccessHandler> successHandlers,
+			@Autowired(required = false) List<AuthenticationFailureHandler> failureHandlers,
+			ShiroCasProperties properties){
 		FilterRegistrationBean<CasAuthenticatingFilter> registration = new FilterRegistrationBean<CasAuthenticatingFilter>(); 
 		CasAuthenticatingFilter casSsoFilter = new CasAuthenticatingFilter();
+		// 监听器
+		casSsoFilter.setLoginListeners(loginListenerProvider.stream().collect(Collectors.toList()));
+		casSsoFilter.setFailureHandlers(failureHandlers);
+		casSsoFilter.setSuccessHandlers(successHandlers);
 		casSsoFilter.setFailureUrl(bizProperties.getFailureUrl());
 		casSsoFilter.setSuccessUrl(bizProperties.getSuccessUrl());
 		registration.setFilter(casSsoFilter);
