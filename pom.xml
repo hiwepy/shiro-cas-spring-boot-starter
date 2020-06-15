@@ -11,7 +11,7 @@
 	</parent>
 	
 	<groupId>com.github.hiwepy</groupId>
-	<artifactId>spring-boot-starter-shiro-cas</artifactId>
+	<artifactId>shiro-cas-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Shiro With Cas</description>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -460,7 +460,7 @@
 		    <version>${woodstox-asl.version}</version>
 		</dependency>
 		
-		<!-- https://github.com/hiwepy/spring-boot-starter-shiro-biz -->
+		<!-- https://github.com/hiwepy/shiro-biz-spring-boot-starter -->
 		<dependency>
 			<groupId>com.github.hiwepy</groupId>
 			<artifactId>shiro-biz-spring-boot-starter</artifactId>
