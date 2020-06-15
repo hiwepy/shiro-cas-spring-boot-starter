@@ -166,7 +166,19 @@ public class ShiroCasProperties  extends CasClientProperties{
 	 * tickets will be required for each request. Defaults to true.
 	 */
 	private boolean useSession = true;
-
+	
+	/**
+	 * Whether Enable Front-end Authorization Proxy. 
+	 */
+	private boolean frontendProxy = false;
+	/**
+	 * The location of the front-end server login URL, i.e.
+	 * http://localhost:8080/#/client?target=/portal
+	 * http://localhost:8080/#/client?client_name=cas&target=/portal
+	 */
+	private String frontendUrl;	
+ 
+	
 	public CaMode getCaMode() {
 		return caMode;
 	}
