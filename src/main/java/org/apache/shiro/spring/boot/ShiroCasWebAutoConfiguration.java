@@ -3,26 +3,20 @@ package org.apache.shiro.spring.boot;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.spring.boot.cas.CasSubjectFactory;
 import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
-import org.apache.shiro.web.filter.authc.AuthenticationFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 @AutoConfigureBefore( name = {
 	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration",  // shiro-spring-boot-web-starter
-	"org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration" // spring-boot-starter-shiro-biz
+	"org.apache.shiro.spring.boot.ShiroBizWebAutoConfiguration" // shiro-biz-spring-boot-starter
 })
-@ConditionalOnWebApplication
-@ConditionalOnClass({AuthenticationFilter.class})
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ ShiroBizProperties.class })
 public class ShiroCasWebAutoConfiguration extends AbstractShiroWebConfiguration implements ApplicationContextAware  {
