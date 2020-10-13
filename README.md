@@ -11,11 +11,13 @@
 
 ### Maven
 
-    <dependency>
-    	<groupId>${project.groupId}</groupId>
-    	<artifactId>shiro-cas-spring-boot-starter</artifactId>
-    	<version>${project.version}</version>
-    </dependency>
+``` xml
+<dependency>
+	<groupId>${project.groupId}</groupId>
+	<artifactId>shiro-cas-spring-boot-starter</artifactId>
+	<version>${project.version}</version>
+</dependency>
+```
 
 ### Sample ： 
 
@@ -24,7 +26,8 @@
 ### 配置参考
 
  > application.yml
-
+ 
+``` yml
 ################################################################################################################  
 ###Shiro 权限控制基本配置：  
 ################################################################################################################
@@ -95,7 +98,7 @@ shiro:
     server-name: http://127.0.0.1:8080
     ignore-pattern: /webjars/;/assets/;/authz/login;/logout;/callback
     ignore-url-pattern-type: org.apache.shiro.spring.boot.cas.ContainsPatternsUrlPatternMatcherStrategy
-
+```
 
 ### 参考资料
 
