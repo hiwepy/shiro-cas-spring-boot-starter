@@ -51,7 +51,7 @@ public class CasTicketValidatorUtils {
 	 */
 	protected static final ProxyGrantingTicketStorage proxyGrantingTicketStorage = new ProxyGrantingTicketStorageImpl();
 
-	/**
+	/*
 	 * Constructs a Cas20ServiceTicketValidator or a Cas20ProxyTicketValidator based
 	 * on supplied parameters.
 	 *
@@ -161,7 +161,7 @@ public class CasTicketValidatorUtils {
 	/**
 	 * Gets the ssl config to use for HTTPS connections if one is configured for
 	 * this filter.
-	 * 
+	 * @param casProperties the ShiroCasProperties object.
 	 * @return Properties that can contains key/trust info for Client Side
 	 *         Certificates
 	 */

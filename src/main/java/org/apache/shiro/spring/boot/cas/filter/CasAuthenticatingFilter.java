@@ -124,7 +124,7 @@ public class CasAuthenticatingFilter extends AuthenticatingFilter {
      * authenticated, in which case redirect to the default success url.
      * 
      * @param token the token representing the current authentication
-     * @param ae the current authentication exception
+     * @param e the current authentication exception
      * @param request the incoming request
      * @param response the outgoing response
      */
