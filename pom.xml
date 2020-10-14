@@ -374,7 +374,7 @@
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
 		<shiro-cas.version>1.6.0</shiro-cas.version>
-		<spring-boot-starter-shiro-biz.version>1.0.6.RELEASE</spring-boot-starter-shiro-biz.version>
+		<spring-boot-starter-shiro-biz.version>1.0.7.RELEASE</spring-boot-starter-shiro-biz.version>
 		<woodstox-asl.version>4.4.1</woodstox-asl.version>
 	</properties>
 	
