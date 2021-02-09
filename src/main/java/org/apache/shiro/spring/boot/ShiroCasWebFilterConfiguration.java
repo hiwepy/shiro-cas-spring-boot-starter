@@ -7,6 +7,7 @@ import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.biz.authc.AuthenticationFailureHandler;
 import org.apache.shiro.biz.authc.AuthenticationSuccessHandler;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
+import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
@@ -338,8 +339,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
     @Override
     protected ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		
-		ShiroFilterFactoryBean filterFactoryBean = new ShiroCasFilterFactoryBean();
-        
+		ShiroFilterProxyFactoryBean filterFactoryBean = new ShiroCasFilterFactoryBean();
+		filterFactoryBean.setStaticSecurityManagerEnabled(bizProperties.isStaticSecurityManagerEnabled());
+		
         //登录地址：会话不存在时访问的地址
   		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), casProperties.getServerCallbackUrl()));
   		//系统主页：登录成功后跳转路径
@@ -351,7 +353,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
  		filterFactoryBean.setSecurityManager(securityManager);
  		//拦截规则
  		filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
-      
+ 		
  		return filterFactoryBean;
         
     }
