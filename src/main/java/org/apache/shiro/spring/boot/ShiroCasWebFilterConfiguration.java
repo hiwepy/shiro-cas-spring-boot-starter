@@ -296,15 +296,15 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	@ConditionalOnMissingBean(name = "cas")
 	public FilterRegistrationBean<CasAuthenticatingFilter> casFilter(
 			ObjectProvider<LoginListener> loginListenerProvider,
-			@Autowired(required = false) List<AuthenticationSuccessHandler> successHandlers,
-			@Autowired(required = false) List<AuthenticationFailureHandler> failureHandlers,
+			ObjectProvider<AuthenticationSuccessHandler> successHandlerProvider,
+			ObjectProvider<AuthenticationFailureHandler> failureHandlerProvider,
 			ShiroCasProperties properties){
 		FilterRegistrationBean<CasAuthenticatingFilter> registration = new FilterRegistrationBean<CasAuthenticatingFilter>(); 
 		CasAuthenticatingFilter casSsoFilter = new CasAuthenticatingFilter();
 		// 监听器
 		casSsoFilter.setLoginListeners(loginListenerProvider.stream().collect(Collectors.toList()));
-		casSsoFilter.setFailureHandlers(failureHandlers);
-		casSsoFilter.setSuccessHandlers(successHandlers);
+		casSsoFilter.setFailureHandlers(failureHandlerProvider.orderedStream().collect(Collectors.toList()));
+		casSsoFilter.setSuccessHandlers(successHandlerProvider.orderedStream().collect(Collectors.toList()));
 		casSsoFilter.setFailureUrl(bizProperties.getFailureUrl());
 		casSsoFilter.setSuccessUrl(bizProperties.getSuccessUrl());
 		registration.setFilter(casSsoFilter);
