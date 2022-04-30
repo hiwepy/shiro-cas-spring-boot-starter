@@ -16,7 +16,7 @@ import org.apache.shiro.spring.boot.cas.CasPrincipalRepository;
 import org.apache.shiro.spring.boot.cas.ShiroCasFilterFactoryBean;
 import org.apache.shiro.spring.boot.cas.filter.CasAuthenticatingFilter;
 import org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter;
-import org.apache.shiro.spring.boot.cas.realm.CasStatefulAuthorizingRealm;
+import org.apache.shiro.spring.boot.cas.realm.CasAssertionAuthorizingRealm;
 import org.apache.shiro.spring.boot.utils.CasUrlUtils;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
@@ -67,14 +67,14 @@ import org.springframework.util.StringUtils;
 @ConditionalOnClass({AuthenticationFilter.class})
 @EnableConfigurationProperties({ ShiroCasProperties.class, ShiroBizProperties.class, ServerProperties.class })
 public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfiguration {
-	
+
 	@Autowired
 	private ShiroCasProperties casProperties;
 	@Autowired
 	private ShiroBizProperties bizProperties;
 	@Autowired
 	private ServerProperties serverProperties;
-	
+
 	/*
 	 * 单点登录Session监听器
 	 */
@@ -93,21 +93,21 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	@Bean
 	public FilterRegistrationBean<AbstractTicketValidationFilter> ticketValidationFilter() {
 		FilterRegistrationBean<AbstractTicketValidationFilter> filterRegistration = new FilterRegistrationBean<AbstractTicketValidationFilter>();
-		filterRegistration.setEnabled(casProperties.isEnabled()); 
+		filterRegistration.setEnabled(casProperties.isEnabled());
 		if(Protocol.CAS1.equals(casProperties.getProtocol())) {
 			filterRegistration.setFilter(new Cas10TicketValidationFilter());
 		}
 		else if(Protocol.CAS2.equals(casProperties.getProtocol())) {
-			
+
 			filterRegistration.setFilter(new Cas20ProxyReceivingTicketValidationFilter());
-			
+
 			// Cas20ProxyReceivingTicketValidationFilter
 			filterRegistration.addInitParameter(ConfigurationKeys.ACCEPT_ANY_PROXY.getName(), Boolean.toString(casProperties.isAcceptAnyProxy()));
-			if(StringUtils.hasText(casProperties.getAllowedProxyChains())) {	
+			if(StringUtils.hasText(casProperties.getAllowedProxyChains())) {
 				filterRegistration.addInitParameter(ConfigurationKeys.ALLOWED_PROXY_CHAINS.getName(), casProperties.getAllowedProxyChains());
 			}
 			filterRegistration.addInitParameter(ConfigurationKeys.ARTIFACT_PARAMETER_OVER_POST.getName(), Boolean.toString(casProperties.isArtifactParameterOverPost()));
-			if(StringUtils.hasText(casProperties.getArtifactParameterName())) {	
+			if(StringUtils.hasText(casProperties.getArtifactParameterName())) {
 				filterRegistration.addInitParameter(ConfigurationKeys.ARTIFACT_PARAMETER_NAME.getName(), casProperties.getArtifactParameterName());
 			}
 			if(StringUtils.hasText(casProperties.getAuthenticationRedirectStrategyClass())) {
@@ -152,7 +152,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 				filterRegistration.addInitParameter(ConfigurationKeys.TICKET_VALIDATOR_CLASS.getName(), casProperties.getTicketValidatorClass());
 			}
 			filterRegistration.addInitParameter(ConfigurationKeys.TOLERANCE.getName(), Long.toString(casProperties.getTolerance()));
-			
+
 		}
 		else if(Protocol.CAS3.equals(casProperties.getProtocol())) {
 			filterRegistration.setFilter(new Cas30ProxyReceivingTicketValidationFilter());
@@ -162,39 +162,39 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 			// Saml11TicketValidationFilter
 			filterRegistration.addInitParameter(ConfigurationKeys.TOLERANCE.getName(), Long.toString(casProperties.getTolerance()));
 		}
-		
+
 		// Cas10TicketValidationFilter、Cas20ProxyReceivingTicketValidationFilter、Cas30ProxyReceivingTicketValidationFilter、Saml11TicketValidationFilter
 		filterRegistration.addInitParameter(ConfigurationKeys.ENCODE_SERVICE_URL.getName(), Boolean.toString(casProperties.isEncodeServiceUrl()));
-		if(StringUtils.hasText(casProperties.getEncoding())) {	
+		if(StringUtils.hasText(casProperties.getEncoding())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.ENCODING.getName(), casProperties.getEncoding());
 		}
 		filterRegistration.addInitParameter(ConfigurationKeys.EXCEPTION_ON_VALIDATION_FAILURE.getName(), Boolean.toString(casProperties.isExceptionOnValidationFailure()));
 		filterRegistration.addInitParameter(ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(), casProperties.getCasServerLoginUrl());
 		filterRegistration.addInitParameter(ConfigurationKeys.CAS_SERVER_URL_PREFIX.getName(), casProperties.getCasServerUrlPrefix());
-		if(StringUtils.hasText(casProperties.getHostnameVerifier())) {	
+		if(StringUtils.hasText(casProperties.getHostnameVerifier())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.HOSTNAME_VERIFIER.getName(), casProperties.getHostnameVerifier());
 		}
-		if(StringUtils.hasText(casProperties.getHostnameVerifierConfig())) {	
+		if(StringUtils.hasText(casProperties.getHostnameVerifierConfig())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.HOSTNAME_VERIFIER_CONFIG.getName(), casProperties.getHostnameVerifierConfig());
 		}
 		filterRegistration.addInitParameter(ConfigurationKeys.REDIRECT_AFTER_VALIDATION.getName(), Boolean.toString(casProperties.isRedirectAfterValidation()));
 		//filterRegistration.addInitParameter(ConfigurationKeys.RENEW.getName(), Boolean.toString(properties.isRenew()));
-		if(StringUtils.hasText(casProperties.getServerName())) {	
+		if(StringUtils.hasText(casProperties.getServerName())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.SERVER_NAME.getName(), casProperties.getServerName());
-		} else if(StringUtils.hasText(casProperties.getService())) {	
+		} else if(StringUtils.hasText(casProperties.getService())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.SERVICE.getName(), casProperties.getService());
 		}
 		if(StringUtils.hasText(casProperties.getSslConfigFile())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.SSL_CONFIG_FILE.getName(), casProperties.getSslConfigFile());
 		}
 		filterRegistration.addInitParameter(ConfigurationKeys.USE_SESSION.getName(), Boolean.toString(casProperties.isUseSession()));
-		
-		
+
+
 		filterRegistration.addUrlPatterns(casProperties.getTicketValidationFilterUrlPatterns());
 		filterRegistration.setOrder(3);
 	    return filterRegistration;
 	}
-	
+
 	/*
 	 * CAS Authentication Filter </br>
 	 * 该过滤器负责用户的认证工作
@@ -207,14 +207,14 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		} else {
 			filterRegistration.setFilter(new AuthenticationFilter());
 		}
-		
-		if(StringUtils.hasText(casProperties.getAuthenticationRedirectStrategyClass())) {	
+
+		if(StringUtils.hasText(casProperties.getAuthenticationRedirectStrategyClass())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.AUTHENTICATION_REDIRECT_STRATEGY_CLASS.getName(), casProperties.getAuthenticationRedirectStrategyClass());
 		}
 		filterRegistration.addInitParameter(ConfigurationKeys.CAS_SERVER_LOGIN_URL.getName(), casProperties.getCasServerLoginUrl());
 		filterRegistration.addInitParameter(ConfigurationKeys.ENCODE_SERVICE_URL.getName(), Boolean.toString(casProperties.isEncodeServiceUrl()));
 		filterRegistration.addInitParameter(ConfigurationKeys.GATEWAY.getName(), Boolean.toString(casProperties.isGateway()));
-		if(StringUtils.hasText(casProperties.getGatewayStorageClass())) {	
+		if(StringUtils.hasText(casProperties.getGatewayStorageClass())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.GATEWAY_STORAGE_CLASS.getName(), casProperties.getGatewayStorageClass());
 		}
 		if(StringUtils.hasText(casProperties.getIgnorePattern())) {
@@ -222,12 +222,12 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		}
 		filterRegistration.addInitParameter(ConfigurationKeys.IGNORE_URL_PATTERN_TYPE.getName(), casProperties.getIgnoreUrlPatternType().toString());
 		//filterRegistration.addInitParameter(ConfigurationKeys.RENEW.getName(), Boolean.toString(properties.isRenew()));
-		if(StringUtils.hasText(casProperties.getServerName())) {	
+		if(StringUtils.hasText(casProperties.getServerName())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.SERVER_NAME.getName(), casProperties.getServerName());
-		} else if(StringUtils.hasText(casProperties.getService())) {	
+		} else if(StringUtils.hasText(casProperties.getService())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.SERVICE.getName(), casProperties.getService());
 		}
-		
+
 		filterRegistration.addUrlPatterns(casProperties.getAuthenticationFilterUrlPatterns());
 		filterRegistration.setOrder(4);
 		return filterRegistration;
@@ -241,9 +241,9 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	public FilterRegistrationBean<HttpServletRequestWrapperFilter> requestWrapperFilter() {
 		FilterRegistrationBean<HttpServletRequestWrapperFilter> filterRegistration = new FilterRegistrationBean<HttpServletRequestWrapperFilter>();
 		filterRegistration.setFilter(new HttpServletRequestWrapperFilter());
-		filterRegistration.setEnabled(casProperties.isEnabled()); 
+		filterRegistration.setEnabled(casProperties.isEnabled());
 		filterRegistration.addInitParameter(ConfigurationKeys.IGNORE_CASE.getName(), String.valueOf(casProperties.isIgnoreCase()));
-		if(StringUtils.hasText(casProperties.getRoleAttribute())) {	
+		if(StringUtils.hasText(casProperties.getRoleAttribute())) {
 			filterRegistration.addInitParameter(ConfigurationKeys.ROLE_ATTRIBUTE.getName(), casProperties.getRoleAttribute());
 		}
 		filterRegistration.addUrlPatterns(casProperties.getRequestWrapperFilterUrlPatterns());
@@ -266,17 +266,17 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		filterRegistration.setOrder(6);
 		return filterRegistration;
 	}
-	
+
 	/*
 	 * 系统登录注销过滤器；默认：org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter
 	 */
 	@Bean("casLogout")
 	@ConditionalOnMissingBean(name = "casLogout")
 	public FilterRegistrationBean<CasLogoutFilter> casLogoutFilter(List<LogoutListener> logoutListeners){
-		
-		FilterRegistrationBean<CasLogoutFilter> registration = new FilterRegistrationBean<CasLogoutFilter>(); 
+
+		FilterRegistrationBean<CasLogoutFilter> registration = new FilterRegistrationBean<CasLogoutFilter>();
 		CasLogoutFilter logoutFilter = new CasLogoutFilter();
-		
+
 		//登录注销后的重定向地址：直接进入登录页面
 		if( CaMode.sso.compareTo(casProperties.getCaMode()) == 0) {
 			//logoutFilter.setCasLogin(true);
@@ -287,11 +287,11 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		registration.setFilter(logoutFilter);
 		//注销监听：实现该接口可监听账号注销失败和成功的状态，从而做业务系统自己的事情，比如记录日志
 		logoutFilter.setLogoutListeners(logoutListeners);
-	    
-	    registration.setEnabled(false); 
+
+	    registration.setEnabled(false);
 	    return registration;
 	}
-	
+
 	@Bean("cas")
 	@ConditionalOnMissingBean(name = "cas")
 	public FilterRegistrationBean<CasAuthenticatingFilter> casFilter(
@@ -299,7 +299,7 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 			ObjectProvider<AuthenticationSuccessHandler> successHandlerProvider,
 			ObjectProvider<AuthenticationFailureHandler> failureHandlerProvider,
 			ShiroCasProperties properties){
-		FilterRegistrationBean<CasAuthenticatingFilter> registration = new FilterRegistrationBean<CasAuthenticatingFilter>(); 
+		FilterRegistrationBean<CasAuthenticatingFilter> registration = new FilterRegistrationBean<CasAuthenticatingFilter>();
 		CasAuthenticatingFilter casSsoFilter = new CasAuthenticatingFilter();
 		// 监听器
 		casSsoFilter.setLoginListeners(loginListenerProvider.stream().collect(Collectors.toList()));
@@ -308,15 +308,15 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		casSsoFilter.setFailureUrl(bizProperties.getFailureUrl());
 		casSsoFilter.setSuccessUrl(bizProperties.getSuccessUrl());
 		registration.setFilter(casSsoFilter);
-	    registration.setEnabled(false); 
+	    registration.setEnabled(false);
 	    return registration;
 	}
-	
+
 	@Bean
 	public Realm casRealm(@Qualifier("casRepository") CasPrincipalRepository repository,
 			List<AuthorizingRealmListener> realmsListeners) {
-		
-		CasStatefulAuthorizingRealm casRealm = new CasStatefulAuthorizingRealm(casProperties);
+
+		CasAssertionAuthorizingRealm casRealm = new CasAssertionAuthorizingRealm(casProperties);
 		//认证账号信息提供实现：认证信息、角色信息、权限信息；业务系统需要自己实现该接口
 		casRealm.setRepository(repository);
 		//凭证匹配器：该对象主要做密码校验
@@ -331,31 +331,31 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		//授权缓存配置
 		casRealm.setAuthorizationCachingEnabled(bizProperties.isAuthorizationCachingEnabled());
 		casRealm.setAuthorizationCacheName(bizProperties.getAuthorizationCacheName());
-		
+
 		return casRealm;
 	}
-	
+
 	@Bean
     @Override
     protected ShiroFilterFactoryBean shiroFilterFactoryBean() {
-		
+
 		ShiroFilterProxyFactoryBean filterFactoryBean = new ShiroCasFilterFactoryBean();
 		filterFactoryBean.setStaticSecurityManagerEnabled(bizProperties.isStaticSecurityManagerEnabled());
-		
+
         //登录地址：会话不存在时访问的地址
   		filterFactoryBean.setLoginUrl(CasUrlUtils.constructLoginRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), casProperties.getServerCallbackUrl()));
   		//系统主页：登录成功后跳转路径
   		filterFactoryBean.setSuccessUrl(bizProperties.getSuccessUrl());
   		//异常页面：无权限时的跳转路径
   		filterFactoryBean.setUnauthorizedUrl(bizProperties.getUnauthorizedUrl());
-      
+
   		//必须设置 SecurityManager
  		filterFactoryBean.setSecurityManager(securityManager);
  		//拦截规则
  		filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
- 		
+
  		return filterFactoryBean;
-        
+
     }
 
 	@Bean(name = "filterShiroFilterRegistrationBean")
@@ -367,5 +367,5 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 
         return filterRegistrationBean;
     }
-    
+
 }

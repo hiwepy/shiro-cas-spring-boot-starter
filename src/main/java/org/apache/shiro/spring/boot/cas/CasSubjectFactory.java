@@ -16,7 +16,7 @@
 package org.apache.shiro.spring.boot.cas;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.spring.boot.cas.token.CasToken;
+import org.apache.shiro.spring.boot.cas.token.CasAssertionAuthenticationToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.SubjectContext;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
@@ -35,8 +35,8 @@ public class CasSubjectFactory extends DefaultWebSubjectFactory {
 
             AuthenticationToken token = context.getAuthenticationToken();
 
-            if (token != null && token instanceof CasToken) {
-                CasToken casToken = (CasToken) token;
+            if (token != null && token instanceof CasAssertionAuthenticationToken) {
+                CasAssertionAuthenticationToken casToken = (CasAssertionAuthenticationToken) token;
                 // set the authenticated flag of the context to true only if the CAS subject is not in a remember me mode
                 if (casToken.isRememberMe()) {
                     context.setAuthenticated(false);
