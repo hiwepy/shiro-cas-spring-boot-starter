@@ -27,7 +27,7 @@ import org.jasig.cas.client.validation.Assertion;
 public class CasAssertionAuthenticationToken extends UsernameWithoutPwdToken implements LoginTypeAuthenticationToken, LoginProtocolAuthenticationToken {
 
 	/** The service ticket returned by the CAS server */
-    private final String ticket;
+    private String ticket;
 	private Assertion assertion;
 	/** 登陆IP */
 	private String host;
@@ -70,6 +70,10 @@ public class CasAssertionAuthenticationToken extends UsernameWithoutPwdToken imp
 
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
 	}
 
 	public String getTicket() {
