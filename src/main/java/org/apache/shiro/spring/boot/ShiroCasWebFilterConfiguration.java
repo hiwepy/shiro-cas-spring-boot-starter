@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.biz.authc.AuthenticationFailureHandler;
 import org.apache.shiro.biz.authc.AuthenticationSuccessHandler;
+import org.apache.shiro.biz.authz.principal.ShiroPrincipalRepository;
 import org.apache.shiro.biz.realm.AuthorizingRealmListener;
 import org.apache.shiro.biz.spring.ShiroFilterProxyFactoryBean;
 import org.apache.shiro.biz.web.filter.authc.listener.LoginListener;
 import org.apache.shiro.biz.web.filter.authc.listener.LogoutListener;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.ShiroCasProperties.CaMode;
-import org.apache.shiro.spring.boot.cas.CasPrincipalRepository;
 import org.apache.shiro.spring.boot.cas.ShiroCasFilterFactoryBean;
 import org.apache.shiro.spring.boot.cas.filter.CasAuthenticatingFilter;
 import org.apache.shiro.spring.boot.cas.filter.CasLogoutFilter;
@@ -36,7 +36,6 @@ import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter
 import org.jasig.cas.client.validation.Saml11TicketValidationFilter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -47,7 +46,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 
 /**
@@ -60,8 +58,8 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @AutoConfigureBefore( name = {
-	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration",  // shiro-spring-boot-web-starter
-	"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration" // spring-boot-starter-shiro-biz
+	"org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration",
+	"org.apache.shiro.spring.boot.ShiroBizWebFilterConfiguration"
 })
 @ConditionalOnProperty(prefix = ShiroCasProperties.PREFIX, value = "enabled", havingValue = "true")
 @ConditionalOnClass({AuthenticationFilter.class})
@@ -277,9 +275,8 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 		FilterRegistrationBean<CasLogoutFilter> registration = new FilterRegistrationBean<CasLogoutFilter>();
 		CasLogoutFilter logoutFilter = new CasLogoutFilter();
 
-		//登录注销后的重定向地址：直接进入登录页面
-		if( CaMode.sso.compareTo(casProperties.getCaMode()) == 0) {
-			//logoutFilter.setCasLogin(true);
+		// 登录注销后的重定向地址：直接进入登录页面
+		if( CaMode.SSO.compareTo(casProperties.getCaMode()) == 0) {
 			logoutFilter.setRedirectUrl(CasUrlUtils.constructLogoutRedirectUrl(casProperties, serverProperties.getServlet().getContextPath(), bizProperties.getLoginUrl()));
 		} else {
 			logoutFilter.setRedirectUrl(bizProperties.getLoginUrl());
@@ -313,16 +310,16 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
 	}
 
 	@Bean
-	public Realm casRealm(@Qualifier("casRepository") CasPrincipalRepository repository,
-			List<AuthorizingRealmListener> realmsListeners) {
+	public Realm casRealm(ObjectProvider<ShiroPrincipalRepository> repositoryProvider,
+						  ObjectProvider<AuthorizingRealmListener> realmsListenerProvider) {
 
 		CasAssertionAuthorizingRealm casRealm = new CasAssertionAuthorizingRealm(casProperties);
 		//认证账号信息提供实现：认证信息、角色信息、权限信息；业务系统需要自己实现该接口
-		casRealm.setRepository(repository);
+		casRealm.setRepository(repositoryProvider.getIfAvailable());
 		//凭证匹配器：该对象主要做密码校验
 		casRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
 		//Realm 执行监听：实现该接口可监听认证失败和成功的状态，从而做业务系统自己的事情，比如记录日志
-		casRealm.setRealmsListeners(realmsListeners);
+		casRealm.setRealmsListeners(realmsListenerProvider.stream().collect(Collectors.toList()));
 		//缓存相关的配置：采用提供的默认配置即可
 		casRealm.setCachingEnabled(bizProperties.isCachingEnabled());
 		//认证缓存配置
@@ -359,13 +356,14 @@ public class ShiroCasWebFilterConfiguration extends AbstractShiroWebFilterConfig
     }
 
 	@Bean(name = "filterShiroFilterRegistrationBean")
-    protected FilterRegistrationBean<AbstractShiroFilter> filterShiroFilterRegistrationBean() throws Exception {
+	@ConditionalOnMissingBean
+	protected FilterRegistrationBean<AbstractShiroFilter> filterShiroFilterRegistrationBean() throws Exception {
 
-        FilterRegistrationBean<AbstractShiroFilter> filterRegistrationBean = new FilterRegistrationBean<AbstractShiroFilter>();
-        filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
-        filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
+		FilterRegistrationBean<AbstractShiroFilter> filterRegistrationBean = new FilterRegistrationBean<AbstractShiroFilter>();
+		filterRegistrationBean.setFilter((AbstractShiroFilter) shiroFilterFactoryBean().getObject());
+		filterRegistrationBean.setOrder(Integer.MAX_VALUE);
 
-        return filterRegistrationBean;
-    }
+		return filterRegistrationBean;
+	}
 
 }

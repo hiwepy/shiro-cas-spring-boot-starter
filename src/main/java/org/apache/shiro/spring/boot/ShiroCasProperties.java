@@ -17,19 +17,21 @@ import lombok.ToString;
 @ToString
 public class ShiroCasProperties  extends CasClientProperties{
 
-	// default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
+	/**
+	 * default name of the CAS attribute for remember me authentication (CAS 3.4.10+)
+	 */
     public static final String DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME = "longTermAuthenticationRequestTokenUsed";
 	public static final String PREFIX = "shiro.cas";
-	
+
 	public static enum CaMode {
 		/** 中心认证：全部去认证中心进行认证. */
-		sso,
-		/** 单点漫游：可充认证中心登录，也可从其他入口登录. */
-		roam
+		SSO,
+		/** 单点漫游：可从认证中心登录，也可从其他入口登录. */
+		ROAM
 	}
-	
+
 	/** Ca Mode  */
-	private CaMode caMode = CaMode.sso;
+	private CaMode caMode = CaMode.SSO;
 	/** DEFAULT,JNDI,WEB_XML,PROPERTY_FILE,SYSTEM_PROPERTIES */
 	private String configurationStrategy;
 	/** Defines the location of the CAS server login URL, i.e. https://localhost:8443/cas/login */
@@ -45,8 +47,8 @@ public class ShiroCasProperties  extends CasClientProperties{
     /** Specifies whether any proxy is OK. Defaults to false. */
 	private boolean acceptAnyProxy = false;
 	/**
-	 * Specifies the proxy chain. 
-	 * Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the ^ character). 
+	 * Specifies the proxy chain.
+	 * Each acceptable proxy chain should include a space-separated list of URLs (for exact match) or regular expressions of URLs (starting by the ^ character).
 	 * Each acceptable proxy chain should appear on its own line.
 	 */
 	private String allowedProxyChains;
@@ -103,10 +105,10 @@ public class ShiroCasProperties  extends CasClientProperties{
 	/** The callback URL to provide the CAS server to accept Proxy Granting Tickets. */
 	private String proxyCallbackUrl;
 	/**
-	 * The URL to watch for PGTIOU/PGT responses from the CAS server. 
-	 * Should be defined from the root of the context. 
-	 * For example, if your application is deployed in /cas-client-app and 
-	 * you want the proxy receptor URL to be /cas-client-app/my/receptor 
+	 * The URL to watch for PGTIOU/PGT responses from the CAS server.
+	 * Should be defined from the root of the context.
+	 * For example, if your application is deployed in /cas-client-app and
+	 * you want the proxy receptor URL to be /cas-client-app/my/receptor
 	 * you need to configure proxyReceptorUrl to be /my/receptor.
 	 */
 	private String proxyReceptorUrl;
@@ -117,8 +119,8 @@ public class ShiroCasProperties  extends CasClientProperties{
 	/** Whether to redirect to the same URL after ticket validation, but without the ticket in the parameter. Defaults to true. */
 	private boolean redirectAfterValidation = true;
 	/**
-	 * Specifies whether renew=true should be sent to the CAS server. 
-	 * Valid values are either true/false (or no value at all). 
+	 * Specifies whether renew=true should be sent to the CAS server.
+	 * Valid values are either true/false (or no value at all).
 	 * Note that renew cannot be specified as local init-param setting..
 	 */
 	private boolean renew = false;
@@ -133,8 +135,8 @@ public class ShiroCasProperties  extends CasClientProperties{
 	/** Defines the location of the application cas callback URL, i.e. /callback */
 	private String serverCallbackUrl;
 	/**
-	 * The name of the server this application is hosted on. 
-	 * Service URL will be dynamically constructed using this, 
+	 * The name of the server this application is hosted on.
+	 * Service URL will be dynamically constructed using this,
 	 * i.e. https://localhost:8443 (you must include the protocol, but port is optional if it's a standard port).
 	 */
 	private String serverName;
@@ -156,8 +158,8 @@ public class ShiroCasProperties  extends CasClientProperties{
 	/** Ticket validator class to use/create */
 	private String ticketValidatorClass;
 	/**
-	 * The tolerance for drifting clocks when validating SAML tickets. 
-	 * Note that 10 seconds should be more than enough for most environments that have NTP time synchronization. 
+	 * The tolerance for drifting clocks when validating SAML tickets.
+	 * Note that 10 seconds should be more than enough for most environments that have NTP time synchronization.
 	 * Defaults to 1000 msec
 	 */
 	private long tolerance = 5000L;
@@ -166,9 +168,9 @@ public class ShiroCasProperties  extends CasClientProperties{
 	 * tickets will be required for each request. Defaults to true.
 	 */
 	private boolean useSession = true;
-	
+
 	/**
-	 * Whether Enable Front-end Authorization Proxy. 
+	 * Whether Enable Front-end Authorization Proxy.
 	 */
 	private boolean frontendProxy = false;
 	/**
@@ -176,447 +178,6 @@ public class ShiroCasProperties  extends CasClientProperties{
 	 * http://localhost:8080/#/client?target=/portal
 	 * http://localhost:8080/#/client?client_name=cas&target=/portal
 	 */
-	private String frontendUrl;	
- 
-	
-	public CaMode getCaMode() {
-		return caMode;
-	}
-
-	public void setCaMode(CaMode caMode) {
-		this.caMode = caMode;
-	}
-
-	public String getConfigurationStrategy() {
-		return configurationStrategy;
-	}
-
-	public void setConfigurationStrategy(String configurationStrategy) {
-		this.configurationStrategy = configurationStrategy;
-	}
-
-	public String getCasServerLoginUrl() {
-		return casServerLoginUrl;
-	}
-
-	public void setCasServerLoginUrl(String casServerLoginUrl) {
-		this.casServerLoginUrl = casServerLoginUrl;
-	}
-	
-	public String getCasServerLogoutUrl() {
-		return casServerLogoutUrl;
-	}
-
-	public void setCasServerLogoutUrl(String casServerLogoutUrl) {
-		this.casServerLogoutUrl = casServerLogoutUrl;
-	}
-
-	public String getCasServerRestUrl() {
-		return casServerRestUrl;
-	}
-
-	public void setCasServerRestUrl(String casServerRestUrl) {
-		this.casServerRestUrl = casServerRestUrl;
-	}
-
-	public String getCasServerUrlPrefix() {
-		return casServerUrlPrefix;
-	}
-
-	public void setCasServerUrlPrefix(String casServerUrlPrefix) {
-		this.casServerUrlPrefix = casServerUrlPrefix;
-	}
-
-	public boolean isEagerlyCreateSessions() {
-		return eagerlyCreateSessions;
-	}
-
-	public void setEagerlyCreateSessions(boolean eagerlyCreateSessions) {
-		this.eagerlyCreateSessions = eagerlyCreateSessions;
-	}
-
-	public boolean isAcceptAnyProxy() {
-		return acceptAnyProxy;
-	}
-
-	public void setAcceptAnyProxy(boolean acceptAnyProxy) {
-		this.acceptAnyProxy = acceptAnyProxy;
-	}
-
-	public String getAllowedProxyChains() {
-		return allowedProxyChains;
-	}
-
-	public void setAllowedProxyChains(String allowedProxyChains) {
-		this.allowedProxyChains = allowedProxyChains;
-	}
-
-	public String getArtifactParameterName() {
-		return artifactParameterName;
-	}
-
-	public void setArtifactParameterName(String artifactParameterName) {
-		this.artifactParameterName = artifactParameterName;
-	}
-
-	public boolean isArtifactParameterOverPost() {
-		return artifactParameterOverPost;
-	}
-
-	public void setArtifactParameterOverPost(boolean artifactParameterOverPost) {
-		this.artifactParameterOverPost = artifactParameterOverPost;
-	}
-
-	public String[] getAssertionThreadLocalFilterUrlPatterns() {
-		return assertionThreadLocalFilterUrlPatterns;
-	}
-
-	public void setAssertionThreadLocalFilterUrlPatterns(String[] assertionThreadLocalFilterUrlPatterns) {
-		this.assertionThreadLocalFilterUrlPatterns = assertionThreadLocalFilterUrlPatterns;
-	}
-
-	public String getAuthenticationRedirectStrategyClass() {
-		return authenticationRedirectStrategyClass;
-	}
-
-	public void setAuthenticationRedirectStrategyClass(String authenticationRedirectStrategyClass) {
-		this.authenticationRedirectStrategyClass = authenticationRedirectStrategyClass;
-	}
-
-	public String[] getAuthenticationFilterUrlPatterns() {
-		return authenticationFilterUrlPatterns;
-	}
-
-	public void setAuthenticationFilterUrlPatterns(String[] authenticationFilterUrlPatterns) {
-		this.authenticationFilterUrlPatterns = authenticationFilterUrlPatterns;
-	}
-
-	public String getCipherAlgorithm() {
-		return cipherAlgorithm;
-	}
-
-	public void setCipherAlgorithm(String cipherAlgorithm) {
-		this.cipherAlgorithm = cipherAlgorithm;
-	}
-
-	public String getDefaultErrorRedirectPage() {
-		return defaultErrorRedirectPage;
-	}
-
-	public void setDefaultErrorRedirectPage(String defaultErrorRedirectPage) {
-		this.defaultErrorRedirectPage = defaultErrorRedirectPage;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public String getEncoding() {
-		return encoding;
-	}
-
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-
-	public boolean isErrorRedirect() {
-		return errorRedirect;
-	}
-
-	public void setErrorRedirect(boolean errorRedirect) {
-		this.errorRedirect = errorRedirect;
-	}
-
-	public Map<String, String> getErrorRedirectMappings() {
-		return errorRedirectMappings;
-	}
-
-	public void setErrorRedirectMappings(Map<String, String> errorRedirectMappings) {
-		this.errorRedirectMappings = errorRedirectMappings;
-	}
-
-	public String[] getErrorRedirectFilterUrlPatterns() {
-		return errorRedirectFilterUrlPatterns;
-	}
-
-	public void setErrorRedirectFilterUrlPatterns(String[] errorRedirectFilterUrlPatterns) {
-		this.errorRedirectFilterUrlPatterns = errorRedirectFilterUrlPatterns;
-	}
-
-	public boolean isEncodeServiceUrl() {
-		return encodeServiceUrl;
-	}
-
-	public void setEncodeServiceUrl(boolean encodeServiceUrl) {
-		this.encodeServiceUrl = encodeServiceUrl;
-	}
-
-	public boolean isExceptionOnValidationFailure() {
-		return exceptionOnValidationFailure;
-	}
-
-	public void setExceptionOnValidationFailure(boolean exceptionOnValidationFailure) {
-		this.exceptionOnValidationFailure = exceptionOnValidationFailure;
-	}
-
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
-
-	public boolean isGateway() {
-		return gateway;
-	}
-
-	public void setGateway(boolean gateway) {
-		this.gateway = gateway;
-	}
-
-	public String getGatewayStorageClass() {
-		return gatewayStorageClass;
-	}
-
-	public void setGatewayStorageClass(String gatewayStorageClass) {
-		this.gatewayStorageClass = gatewayStorageClass;
-	}
-
-	public String getHostnameVerifier() {
-		return hostnameVerifier;
-	}
-
-	public void setHostnameVerifier(String hostnameVerifier) {
-		this.hostnameVerifier = hostnameVerifier;
-	}
-
-	public String getHostnameVerifierConfig() {
-		return hostnameVerifierConfig;
-	}
-
-	public void setHostnameVerifierConfig(String hostnameVerifierConfig) {
-		this.hostnameVerifierConfig = hostnameVerifierConfig;
-	}
-
-	public boolean isIgnoreCase() {
-		return ignoreCase;
-	}
-
-	public void setIgnoreCase(boolean ignoreCase) {
-		this.ignoreCase = ignoreCase;
-	}
-
-	public String getIgnorePattern() {
-		return ignorePattern;
-	}
-
-	public void setIgnorePattern(String ignorePattern) {
-		this.ignorePattern = ignorePattern;
-	}
-
-	public String getIgnoreUrlPatternType() {
-		return ignoreUrlPatternType;
-	}
-
-	public void setIgnoreUrlPatternType(String ignoreUrlPatternType) {
-		this.ignoreUrlPatternType = ignoreUrlPatternType;
-	}
-
-	public boolean isIgnoreInitConfiguration() {
-		return ignoreInitConfiguration;
-	}
-
-	public void setIgnoreInitConfiguration(boolean ignoreInitConfiguration) {
-		this.ignoreInitConfiguration = ignoreInitConfiguration;
-	}
-
-	public String getLogoutParameterName() {
-		return logoutParameterName;
-	}
-
-	public void setLogoutParameterName(String logoutParameterName) {
-		this.logoutParameterName = logoutParameterName;
-	}
-
-	public long getMillisBetweenCleanUps() {
-		return millisBetweenCleanUps;
-	}
-
-	public void setMillisBetweenCleanUps(long millisBetweenCleanUps) {
-		this.millisBetweenCleanUps = millisBetweenCleanUps;
-	}
-
-	public Protocol getProtocol() {
-		return protocol;
-	}
-
-	public void setProtocol(Protocol protocol) {
-		this.protocol = protocol;
-	}
-
-	public String getProxyCallbackUrl() {
-		return proxyCallbackUrl;
-	}
-
-	public void setProxyCallbackUrl(String proxyCallbackUrl) {
-		this.proxyCallbackUrl = proxyCallbackUrl;
-	}
-
-	public String getProxyReceptorUrl() {
-		return proxyReceptorUrl;
-	}
-
-	public void setProxyReceptorUrl(String proxyReceptorUrl) {
-		this.proxyReceptorUrl = proxyReceptorUrl;
-	}
-
-	public String getProxyGrantingTicketStorageClass() {
-		return proxyGrantingTicketStorageClass;
-	}
-
-	public void setProxyGrantingTicketStorageClass(String proxyGrantingTicketStorageClass) {
-		this.proxyGrantingTicketStorageClass = proxyGrantingTicketStorageClass;
-	}
-
-	public String[] getRequestWrapperFilterUrlPatterns() {
-		return requestWrapperFilterUrlPatterns;
-	}
-
-	public void setRequestWrapperFilterUrlPatterns(String[] requestWrapperFilterUrlPatterns) {
-		this.requestWrapperFilterUrlPatterns = requestWrapperFilterUrlPatterns;
-	}
-
-	public boolean isRedirectAfterValidation() {
-		return redirectAfterValidation;
-	}
-
-	public void setRedirectAfterValidation(boolean redirectAfterValidation) {
-		this.redirectAfterValidation = redirectAfterValidation;
-	}
-
-	public boolean isRenew() {
-		return renew;
-	}
-
-	public void setRenew(boolean renew) {
-		this.renew = renew;
-	}
-
-	public String getRelayStateParameterName() {
-		return relayStateParameterName;
-	}
-
-	public void setRelayStateParameterName(String relayStateParameterName) {
-		this.relayStateParameterName = relayStateParameterName;
-	}
-
-	public String getRoleAttribute() {
-		return roleAttribute;
-	}
-
-	public void setRoleAttribute(String roleAttribute) {
-		this.roleAttribute = roleAttribute;
-	}
-	
-	public String getRememberMeAttributeName() {
-		return rememberMeAttributeName;
-	}
-
-	public void setRememberMeAttributeName(String rememberMeAttributeName) {
-		this.rememberMeAttributeName = rememberMeAttributeName;
-	}
-
-	public String getSecretKey() {
-		return secretKey;
-	}
-
-	public void setSecretKey(String secretKey) {
-		this.secretKey = secretKey;
-	}
-
-	public String getServerCallbackUrl() {
-		return serverCallbackUrl;
-	}
-
-	public void setServerCallbackUrl(String serverCallbackUrl) {
-		this.serverCallbackUrl = serverCallbackUrl;
-	}
-
-	public String getServerName() {
-		return serverName;
-	}
-
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
-	
-	public String getService() {
-		return service;
-	}
-
-	public void setService(String service) {
-		this.service = service;
-	}
-
-	public String[] getSignOutFilterUrlPatterns() {
-		return signOutFilterUrlPatterns;
-	}
-
-	public void setSignOutFilterUrlPatterns(String[] signOutFilterUrlPatterns) {
-		this.signOutFilterUrlPatterns = signOutFilterUrlPatterns;
-	}
-
-	public String getSslConfigFile() {
-		return sslConfigFile;
-	}
-
-	public void setSslConfigFile(String sslConfigFile) {
-		this.sslConfigFile = sslConfigFile;
-	}
-
-	public String[] getTicketValidationFilterUrlPatterns() {
-		return ticketValidationFilterUrlPatterns;
-	}
-
-	public void setTicketValidationFilterUrlPatterns(String[] ticketValidationFilterUrlPatterns) {
-		this.ticketValidationFilterUrlPatterns = ticketValidationFilterUrlPatterns;
-	}
-
-	public String getTicketValidatorClass() {
-		return ticketValidatorClass;
-	}
-
-	public void setTicketValidatorClass(String ticketValidatorClass) {
-		this.ticketValidatorClass = ticketValidatorClass;
-	}
-
-	public long getTolerance() {
-		return tolerance;
-	}
-
-	public void setTolerance(long tolerance) {
-		this.tolerance = tolerance;
-	}
-
-	public boolean isUseSession() {
-		return useSession;
-	}
-
-	public void setUseSession(boolean useSession) {
-		this.useSession = useSession;
-	}
-
-	public String getServiceParameterName() {
-		return serviceParameterName;
-	}
-
-	public void setServiceParameterName(String serviceParameterName) {
-		this.serviceParameterName = serviceParameterName;
-	}
+	private String frontendUrl;
 
 }
