@@ -26,7 +26,7 @@ public class AntPatternMatcherStrategy implements UrlPatternMatcherStrategy {
 	 * context config paths in a single String value.
 	 */
 	public static String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
-	private AntPathMatcher matcher = new AntPathMatcher();
+	private final AntPathMatcher matcher = new AntPathMatcher();
 	private String[] patterns;
 
 	@Override
