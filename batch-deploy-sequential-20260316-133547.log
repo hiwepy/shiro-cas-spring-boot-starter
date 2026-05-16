@@ -1,0 +1,122 @@
+[shiro-cas-spring-boot-starter/2.3.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/2.7.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.0.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.1.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.2.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.3.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.4.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/3.5.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;31mERROR[m] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] 'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+ @ 
+[[1;31mERROR[m] The build could not read 1 project -> [1m[Help 1][m
+[[1;31mERROR[m]   
+[[1;31mERROR[m]   The project io.github.hiwepy:shiro-cas-spring-boot-starter:4.0.x.20251227-SNAPSHOT (/Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/shiro-cas-spring-boot-starter/pom.xml) has 1 error
+[[1;31mERROR[m]     'dependencies.dependency.version' for javax.servlet:javax.servlet-api:jar is missing. @ line 366, column 15
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[shiro-cas-spring-boot-starter/4.0.x] 失败 - 查看日志
+[shiro-cas-spring-boot-starter/master] 失败 - 分支切换失败
